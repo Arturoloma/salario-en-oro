@@ -1,0 +1,1 @@
+# salario-en-oro
