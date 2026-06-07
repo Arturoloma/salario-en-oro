@@ -1,0 +1,90 @@
+@layer tokens {
+  :root {
+    color-scheme: light;
+
+    /* Color */
+    --color-background: #faf8f5;
+    --color-surface: #ffffff;
+    --color-surface-muted: #f1f5f9;
+    --color-surface-neutral: #f4f2ee;
+    --color-surface-input: #fffdf7;
+    --color-text: #2f3540;
+    --color-text-strong: #3a3f45;
+    --color-text-muted: #6b7280;
+    --color-primary: #1f4e79;
+    --color-primary-hover: #173e62;
+    --color-secondary: #2a7f7f;
+    --color-accent-gold: #c9a44a;
+    --color-accent-gold-muted: #fbf4dd;
+    --color-accent-terracotta: #c75d45;
+    --color-border-subtle: #e6e2da;
+    --color-border-strong: #d2d7df;
+    --color-positive: #2e7d5b;
+    --color-positive-muted: #eaf5ee;
+    --color-negative: #c23b3b;
+    --color-negative-muted: #fbeaea;
+    --color-warning: #e3a008;
+    --color-warning-muted: #fff7e0;
+    --color-info: #2563eb;
+    --color-info-muted: #eef4f6;
+    --color-result-summary: #e8f2f7;
+    --color-methodology: #f7f3e6;
+    --color-disabled: #b8bdc6;
+    --color-on-primary: #ffffff;
+
+    /* Typography */
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-numeric: 'IBM Plex Mono', ui-monospace, monospace;
+    --text-h1: 2.5rem;
+    --text-h2: 1.75rem;
+    --text-h3: 1.25rem;
+    --text-body: 1rem;
+    --text-small: 0.8125rem;
+    --text-caption: 0.75rem;
+    --text-label: 0.8125rem;
+    --text-number-lg: 2rem;
+    --text-number-md: 1.5rem;
+    --text-number-sm: 1rem;
+
+    /* Spacing */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 1rem;
+    --space-4: 1.5rem;
+    --space-5: 2rem;
+    --space-6: 3rem;
+    --space-7: 4rem;
+    --space-8: 6rem;
+
+    /* Shape */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+
+    /* Depth and focus */
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06);
+    --shadow-md: 0 4px 12px rgb(0 0 0 / 0.08);
+    --shadow-card: 0 1rem 2.5rem rgb(47 53 64 / 0.08);
+    --focus-outline: 3px solid rgb(31 78 121 / 0.35);
+    --focus-outline-offset: 3px;
+
+    /* Layout */
+    --container-width: 75rem;
+    --page-padding: 2rem;
+    --page-padding-mobile: 1rem;
+    --section-gap: var(--space-8);
+    --grid-gap: var(--space-4);
+
+    /* Component aliases */
+    --card-background: var(--color-surface);
+    --card-border: 1px solid var(--color-border-subtle);
+    --card-radius: var(--radius-md);
+    --card-padding: var(--space-4);
+    --result-background: var(--color-accent-gold-muted);
+    --control-border: 1px solid var(--color-border-strong);
+    --control-radius: var(--radius-md);
+    --control-min-block-size: 2.75rem;
+  }
+}

@@ -1,23 +1,191 @@
 ---
+import { calculateGoldCoins } from '../lib/calculate';
+import { GOLD_COIN_FINE_GOLD_GRAMS } from '../lib/constants';
+import calculationData from '../../public/data/calculation-data.json';
+
 import '../styles/global.css';
+
+const DEFAULT_SALARY_EUR = 1500;
+const DEFAULT_PAGAS = 12;
+
+const latestRow = [...calculationData.data].sort((a, b) => b.year - a.year)[0];
+
+if (!latestRow) {
+  throw new Error('Calculation data must include at least one row');
+}
+
+const goldEurPerGram = latestRow.goldEurPerGram;
+
+if (!Number.isFinite(goldEurPerGram) || goldEurPerGram <= 0) {
+  throw new Error(
+    'Latest calculation row must include a positive goldEurPerGram',
+  );
+}
+
+const initialMonthlyCoins = calculateGoldCoins(
+  DEFAULT_SALARY_EUR,
+  goldEurPerGram,
+);
+const initialAnnualCoins = initialMonthlyCoins * DEFAULT_PAGAS;
+
+const numberFormatter = new Intl.NumberFormat('es-ES', {
+  maximumFractionDigits: 2,
+});
+const coinFormatter = new Intl.NumberFormat('es-ES', {
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 2,
+});
 ---
 
 <!doctype html>
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <title>Salario en Oro</title>
   </head>
   <body>
-    <main class="page-shell">
+    <main class="page-shell calculator-page">
       <p class="eyebrow">Salario en Oro</p>
-      <h1>Calcula tu salario en monedas de oro.</h1>
-      <p>
-        Proyecto en preparacion. La calculadora usara datos historicos para
-        comparar salarios en Espana con inflacion y oro.
-      </p>
+      <h1>Calcula tu salario en monedas de oro</h1>
+
+      <form
+        class="calculator"
+        data-gold-eur-per-gram={goldEurPerGram}
+        data-gold-coin-fine-gold-grams={GOLD_COIN_FINE_GOLD_GRAMS}
+      >
+        <div class="field-group">
+          <label for="salary">Tu salario neto mensual</label>
+          <div class="input-wrap">
+            <input
+              id="salary"
+              name="salary"
+              type="number"
+              inputmode="decimal"
+              min="0"
+              step="0.01"
+              value={DEFAULT_SALARY_EUR}
+            />
+            <span aria-hidden="true">€/mes</span>
+          </div>
+        </div>
+
+        <fieldset class="radio-group" id="pagas-fieldset">
+          <legend>Pagas</legend>
+          <div class="radio-options">
+            <label class="radio-label">
+              <input
+                type="radio"
+                id="pagas-12"
+                name="pagas"
+                value="12"
+                checked
+              />
+              <span>12 pagas</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" id="pagas-14" name="pagas" value="14" />
+              <span>14 pagas</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <output
+          class="result-card"
+          id="result"
+          for="salary pagas-12 pagas-14"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <span class="result-text" id="result-text">
+            {numberFormatter.format(DEFAULT_SALARY_EUR)} €/mes equivalen a
+          </span>
+          <strong id="result-value-primary">
+            {coinFormatter.format(initialMonthlyCoins)} monedas de oro al mes
+          </strong>
+          <span id="result-value-secondary" class="result-value-secondary">
+            {coinFormatter.format(initialAnnualCoins)} monedas de oro al año
+          </span>
+        </output>
+      </form>
     </main>
+
+    <script type="module" is:inline>
+      const form = document.querySelector('.calculator');
+      const salaryInput = document.querySelector('#salary');
+      const resultText = document.querySelector('#result-text');
+      const resultValuePrimary = document.querySelector(
+        '#result-value-primary',
+      );
+      const resultValueSecondary = document.querySelector(
+        '#result-value-secondary',
+      );
+
+      if (
+        form instanceof HTMLFormElement &&
+        salaryInput instanceof HTMLInputElement &&
+        resultText &&
+        resultValuePrimary &&
+        resultValueSecondary
+      ) {
+        const goldEurPerGram = Number(form.dataset.goldEurPerGram);
+        const goldCoinFineGoldGrams = Number(
+          form.dataset.goldCoinFineGoldGrams,
+        );
+        const numberFormatter = new Intl.NumberFormat('es-ES', {
+          maximumFractionDigits: 2,
+        });
+        const coinFormatter = new Intl.NumberFormat('es-ES', {
+          maximumFractionDigits: 2,
+          minimumFractionDigits: 2,
+        });
+
+        const getPagas = () =>
+          Number(
+            form.querySelector('input[name="pagas"]:checked')?.value ?? '12',
+          );
+
+        const clearResult = () => {
+          resultText.textContent = '';
+          resultValuePrimary.textContent = '';
+          resultValueSecondary.textContent = '';
+        };
+
+        const updateResult = () => {
+          const pagas = getPagas();
+
+          if (salaryInput.value === '') {
+            clearResult();
+            return;
+          }
+
+          const salary = salaryInput.valueAsNumber;
+
+          if (Number.isNaN(salary) || salary < 0) {
+            clearResult();
+            return;
+          }
+
+          const monthlyCoins = salary / goldEurPerGram / goldCoinFineGoldGrams;
+          const annualCoins = monthlyCoins * pagas;
+          resultText.textContent = `${numberFormatter.format(
+            salary,
+          )} €/mes equivalen a`;
+          resultValuePrimary.textContent = `${coinFormatter.format(
+            monthlyCoins,
+          )} monedas de oro al mes`;
+          resultValueSecondary.textContent = `${coinFormatter.format(
+            annualCoins,
+          )} monedas de oro al año`;
+        };
+
+        form.addEventListener('submit', (event) => event.preventDefault());
+        salaryInput.addEventListener('input', updateResult);
+        form.querySelectorAll('input[name="pagas"]').forEach((radio) => {
+          radio.addEventListener('change', updateResult);
+        });
+      }
+    </script>
   </body>
 </html>

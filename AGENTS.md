@@ -2,7 +2,7 @@
 
 Use this file for persistent project instructions. Keep it concise and update it only for rules that should apply to most future coding sessions.
 
-See `README.md` for setup commands and `ROADMAP.md` for product decisions.
+See `README.md` for setup commands, `ROADMAP.md` for product decisions, and `DESIGN.md` for UX/UI design-system guidance.
 
 ## Project Context
 
@@ -45,6 +45,7 @@ If a check fails, fix the root cause instead of weakening the check.
 - Keep TypeScript strict-compatible; avoid `any` unless there is a concrete reason.
 - Prefer small pure functions for calculation logic in `src/lib/`.
 - Keep UI pages/components lightweight and accessible.
+- Follow `DESIGN.md` for visual identity, design tokens, component states, data visualization, trust, and accessibility rules.
 - Use semantic HTML and native form controls where possible.
 - Do not add large UI, charting, state-management, or CSS frameworks without explicit approval.
 
