@@ -1,0 +1,428 @@
+{
+  "retrievedAt": "2026-06-07",
+  "startYear": 1975,
+  "latestCompleteYear": 2025,
+  "units": {
+    "cpiIndex": "index",
+    "goldUsdPerTroyOunce": "USD per troy ounce",
+    "eurUsdRate": "USD per EUR",
+    "espUsdRate": "ESP per USD",
+    "goldEurPerGram": "EUR per gram"
+  },
+  "sourceIds": [
+    "cpi-spain-annual",
+    "gold-annual",
+    "eur-usd-annual",
+    "esp-usd-annual"
+  ],
+  "data": [
+    {
+      "year": 1975,
+      "cpiIndex": 6.726278752008798,
+      "goldUsdPerTroyOunce": 161.03,
+      "eurUsdRate": null,
+      "espUsdRate": 56.95,
+      "goldEurPerGram": 1.7720439062067037
+    },
+    {
+      "year": 1976,
+      "cpiIndex": 7.91493390260245,
+      "goldUsdPerTroyOunce": 124.82,
+      "eurUsdRate": null,
+      "espUsdRate": 62.45,
+      "goldEurPerGram": 1.5062275186974206
+    },
+    {
+      "year": 1977,
+      "cpiIndex": 9.861788178765154,
+      "goldUsdPerTroyOunce": 147.72,
+      "eurUsdRate": null,
+      "espUsdRate": 70.55,
+      "goldEurPerGram": 2.013771888566504
+    },
+    {
+      "year": 1978,
+      "cpiIndex": 11.81647955969906,
+      "goldUsdPerTroyOunce": 193.24,
+      "eurUsdRate": null,
+      "espUsdRate": 74.65,
+      "goldEurPerGram": 2.7874096407691304
+    },
+    {
+      "year": 1979,
+      "cpiIndex": 13.664032953262165,
+      "goldUsdPerTroyOunce": 306.67,
+      "eurUsdRate": null,
+      "espUsdRate": 80.35,
+      "goldEurPerGram": 4.761361228745299
+    },
+    {
+      "year": 1980,
+      "cpiIndex": 15.805537227984724,
+      "goldUsdPerTroyOunce": 607.86,
+      "eurUsdRate": null,
+      "espUsdRate": 104.55,
+      "goldEurPerGram": 12.280090284993456
+    },
+    {
+      "year": 1981,
+      "cpiIndex": 18.115421143963705,
+      "goldUsdPerTroyOunce": 459.75,
+      "eurUsdRate": null,
+      "espUsdRate": 120.25,
+      "goldEurPerGram": 10.682693789316598
+    },
+    {
+      "year": 1982,
+      "cpiIndex": 20.7406168670376,
+      "goldUsdPerTroyOunce": 375.8,
+      "eurUsdRate": null,
+      "espUsdRate": 131.45,
+      "goldEurPerGram": 9.545338258834235
+    },
+    {
+      "year": 1983,
+      "cpiIndex": 23.264186626652315,
+      "goldUsdPerTroyOunce": 422.53,
+      "eurUsdRate": null,
+      "espUsdRate": 144.35,
+      "goldEurPerGram": 11.7855076690929
+    },
+    {
+      "year": 1984,
+      "cpiIndex": 25.88846661204633,
+      "goldUsdPerTroyOunce": 360.48,
+      "eurUsdRate": null,
+      "espUsdRate": 161.15,
+      "goldEurPerGram": 11.224976517761359
+    },
+    {
+      "year": 1985,
+      "cpiIndex": 28.14844497884222,
+      "goldUsdPerTroyOunce": 317.91,
+      "eurUsdRate": null,
+      "espUsdRate": 171.05,
+      "goldEurPerGram": 10.507544174707053
+    },
+    {
+      "year": 1986,
+      "cpiIndex": 30.588973255313388,
+      "goldUsdPerTroyOunce": 367.69,
+      "eurUsdRate": null,
+      "espUsdRate": 138.55,
+      "goldEurPerGram": 9.843789216185941
+    },
+    {
+      "year": 1987,
+      "cpiIndex": 32.19655115473395,
+      "goldUsdPerTroyOunce": 446.47,
+      "eurUsdRate": null,
+      "espUsdRate": 123.65,
+      "goldEurPerGram": 10.667443712218468
+    },
+    {
+      "year": 1988,
+      "cpiIndex": 33.77833615400798,
+      "goldUsdPerTroyOunce": 437.05,
+      "eurUsdRate": null,
+      "espUsdRate": 117.55,
+      "goldEurPerGram": 9.927221564444697
+    },
+    {
+      "year": 1989,
+      "cpiIndex": 36.06649723577561,
+      "goldUsdPerTroyOunce": 381.43,
+      "eurUsdRate": null,
+      "espUsdRate": 120.25,
+      "goldEurPerGram": 8.862860015354062
+    },
+    {
+      "year": 1990,
+      "cpiIndex": 38.48670076761036,
+      "goldUsdPerTroyOunce": 383.47,
+      "eurUsdRate": null,
+      "espUsdRate": 112.95,
+      "goldEurPerGram": 8.369347215878001
+    },
+    {
+      "year": 1991,
+      "cpiIndex": 40.76940885989144,
+      "goldUsdPerTroyOunce": 362.18,
+      "eurUsdRate": null,
+      "espUsdRate": 104.85,
+      "goldEurPerGram": 7.337816654654801
+    },
+    {
+      "year": 1992,
+      "cpiIndex": 43.25434540856187,
+      "goldUsdPerTroyOunce": 343.73,
+      "eurUsdRate": null,
+      "espUsdRate": 112.55,
+      "goldEurPerGram": 7.475442310837594
+    },
+    {
+      "year": 1993,
+      "cpiIndex": 45.24738399519635,
+      "goldUsdPerTroyOunce": 359.77,
+      "eurUsdRate": null,
+      "espUsdRate": 118.05,
+      "goldEurPerGram": 8.206630775298537
+    },
+    {
+      "year": 1994,
+      "cpiIndex": 47.38547570415145,
+      "goldUsdPerTroyOunce": 384.01,
+      "eurUsdRate": null,
+      "espUsdRate": 133.45,
+      "goldEurPerGram": 9.902276958342096
+    },
+    {
+      "year": 1995,
+      "cpiIndex": 49.54322114458723,
+      "goldUsdPerTroyOunce": 384.16,
+      "eurUsdRate": null,
+      "espUsdRate": 133.95,
+      "goldEurPerGram": 9.943260501933507
+    },
+    {
+      "year": 1996,
+      "cpiIndex": 51.31212045029067,
+      "goldUsdPerTroyOunce": 387.7,
+      "eurUsdRate": null,
+      "espUsdRate": 138.85,
+      "goldEurPerGram": 10.401971080406675
+    },
+    {
+      "year": 1997,
+      "cpiIndex": 52.22890336366691,
+      "goldUsdPerTroyOunce": 331.1,
+      "eurUsdRate": null,
+      "espUsdRate": 144.25,
+      "goldEurPerGram": 9.228879159770475
+    },
+    {
+      "year": 1998,
+      "cpiIndex": 53.171059804292696,
+      "goldUsdPerTroyOunce": 294.16,
+      "eurUsdRate": null,
+      "espUsdRate": 148.55,
+      "goldEurPerGram": 8.443650135490538
+    },
+    {
+      "year": 1999,
+      "cpiIndex": 54.447638909742466,
+      "goldUsdPerTroyOunce": 278.77,
+      "eurUsdRate": 1.0657764478764478,
+      "espUsdRate": null,
+      "goldEurPerGram": 8.409509286466841
+    },
+    {
+      "year": 2000,
+      "cpiIndex": 56.32928619318954,
+      "goldUsdPerTroyOunce": 279.03,
+      "eurUsdRate": 0.9236125490196074,
+      "espUsdRate": null,
+      "goldEurPerGram": 9.712964741665642
+    },
+    {
+      "year": 2001,
+      "cpiIndex": 58.25223029058733,
+      "goldUsdPerTroyOunce": 270.99,
+      "eurUsdRate": 0.8956295275590546,
+      "espUsdRate": null,
+      "goldEurPerGram": 9.727821656046824
+    },
+    {
+      "year": 2002,
+      "cpiIndex": 60.03625,
+      "goldUsdPerTroyOunce": 309.97,
+      "eurUsdRate": 0.9455737254901962,
+      "espUsdRate": null,
+      "goldEurPerGram": 10.539378592904493
+    },
+    {
+      "year": 2003,
+      "cpiIndex": 61.86083333333332,
+      "goldUsdPerTroyOunce": 363.51,
+      "eurUsdRate": 1.131160392156862,
+      "espUsdRate": null,
+      "goldEurPerGram": 10.331964634558963
+    },
+    {
+      "year": 2004,
+      "cpiIndex": 63.74108333333333,
+      "goldUsdPerTroyOunce": 409.21,
+      "eurUsdRate": 1.243902316602317,
+      "espUsdRate": null,
+      "goldEurPerGram": 10.576712507428365
+    },
+    {
+      "year": 2005,
+      "cpiIndex": 65.88808333333333,
+      "goldUsdPerTroyOunce": 444.84,
+      "eurUsdRate": 1.2440902723735408,
+      "espUsdRate": null,
+      "goldEurPerGram": 11.49589202119003
+    },
+    {
+      "year": 2006,
+      "cpiIndex": 68.20458333333333,
+      "goldUsdPerTroyOunce": 604.34,
+      "eurUsdRate": 1.2555988235294109,
+      "espUsdRate": null,
+      "goldEurPerGram": 15.474662228423693
+    },
+    {
+      "year": 2007,
+      "cpiIndex": 70.10516666666666,
+      "goldUsdPerTroyOunce": 696.72,
+      "eurUsdRate": 1.370478039215687,
+      "espUsdRate": null,
+      "goldEurPerGram": 16.344699294835472
+    },
+    {
+      "year": 2008,
+      "cpiIndex": 72.96241666666667,
+      "goldUsdPerTroyOunce": 871.71,
+      "eurUsdRate": 1.4707554687500008,
+      "espUsdRate": null,
+      "goldEurPerGram": 19.0555853656356
+    },
+    {
+      "year": 2009,
+      "cpiIndex": 72.75233333333334,
+      "goldUsdPerTroyOunce": 972.97,
+      "eurUsdRate": 1.3947824218749993,
+      "espUsdRate": null,
+      "goldEurPerGram": 22.427647542258576
+    },
+    {
+      "year": 2010,
+      "cpiIndex": 74.06174999999999,
+      "goldUsdPerTroyOunce": 1224.66,
+      "eurUsdRate": 1.3257166666666678,
+      "espUsdRate": null,
+      "goldEurPerGram": 29.699938843641046
+    },
+    {
+      "year": 2011,
+      "cpiIndex": 76.42883333333334,
+      "goldUsdPerTroyOunce": 1569.21,
+      "eurUsdRate": 1.391955252918288,
+      "espUsdRate": null,
+      "goldEurPerGram": 36.24486870949512
+    },
+    {
+      "year": 2012,
+      "cpiIndex": 78.29824999999998,
+      "goldUsdPerTroyOunce": 1669.52,
+      "eurUsdRate": 1.2847886718749995,
+      "espUsdRate": null,
+      "goldEurPerGram": 41.77829050744376
+    },
+    {
+      "year": 2013,
+      "cpiIndex": 79.40125,
+      "goldUsdPerTroyOunce": 1411.46,
+      "eurUsdRate": 1.3281180392156864,
+      "espUsdRate": null,
+      "goldEurPerGram": 34.168242252125026
+    },
+    {
+      "year": 2014,
+      "cpiIndex": 79.28141666666666,
+      "goldUsdPerTroyOunce": 1265.58,
+      "eurUsdRate": 1.3285007843137249,
+      "espUsdRate": null,
+      "goldEurPerGram": 30.62799207400921
+    },
+    {
+      "year": 2015,
+      "cpiIndex": 78.88475,
+      "goldUsdPerTroyOunce": 1160.66,
+      "eurUsdRate": 1.1095128906250007,
+      "espUsdRate": null,
+      "goldEurPerGram": 33.63282931969883
+    },
+    {
+      "year": 2016,
+      "cpiIndex": 78.72483333333334,
+      "goldUsdPerTroyOunce": 1248.99,
+      "eurUsdRate": 1.1069031128404665,
+      "espUsdRate": null,
+      "goldEurPerGram": 36.277728862378616
+    },
+    {
+      "year": 2017,
+      "cpiIndex": 80.2645,
+      "goldUsdPerTroyOunce": 1257.56,
+      "eurUsdRate": 1.1296811764705874,
+      "espUsdRate": null,
+      "goldEurPerGram": 35.79015348688232
+    },
+    {
+      "year": 2018,
+      "cpiIndex": 81.60925,
+      "goldUsdPerTroyOunce": 1269.23,
+      "eurUsdRate": 1.1809545098039216,
+      "espUsdRate": null,
+      "goldEurPerGram": 34.55396570397569
+    },
+    {
+      "year": 2019,
+      "cpiIndex": 82.17991666666667,
+      "goldUsdPerTroyOunce": 1392.5,
+      "eurUsdRate": 1.1194745098039223,
+      "espUsdRate": null,
+      "goldEurPerGram": 39.99187191043908
+    },
+    {
+      "year": 2020,
+      "cpiIndex": 81.91483333333333,
+      "goldUsdPerTroyOunce": 1770.25,
+      "eurUsdRate": 1.1421961089494168,
+      "espUsdRate": null,
+      "goldEurPerGram": 49.82928606966999
+    },
+    {
+      "year": 2021,
+      "cpiIndex": 84.4485,
+      "goldUsdPerTroyOunce": 1799.63,
+      "eurUsdRate": 1.18274031007752,
+      "espUsdRate": null,
+      "goldEurPerGram": 48.919787714289235
+    },
+    {
+      "year": 2022,
+      "cpiIndex": 91.53408333333334,
+      "goldUsdPerTroyOunce": 1800.6,
+      "eurUsdRate": 1.0530486381322954,
+      "espUsdRate": null,
+      "goldEurPerGram": 54.974280384342435
+    },
+    {
+      "year": 2023,
+      "cpiIndex": 94.7675,
+      "goldUsdPerTroyOunce": 1942.67,
+      "eurUsdRate": 1.0812686274509802,
+      "espUsdRate": null,
+      "goldEurPerGram": 57.763855034137734
+    },
+    {
+      "year": 2024,
+      "cpiIndex": 97.39641666666667,
+      "goldUsdPerTroyOunce": 2387.7,
+      "eurUsdRate": 1.0823804687500003,
+      "espUsdRate": null,
+      "goldEurPerGram": 70.92356388396834
+    },
+    {
+      "year": 2025,
+      "cpiIndex": 100.00008333333334,
+      "goldUsdPerTroyOunce": 3441.51,
+      "eurUsdRate": 1.1299831372549018,
+      "espUsdRate": null,
+      "goldEurPerGram": 97.91918980390365
+    }
+  ]
+}

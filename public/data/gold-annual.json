@@ -1,0 +1,278 @@
+{
+  "id": "gold-annual",
+  "source": "World Bank Commodity Markets",
+  "sourceUrl": "https://www.worldbank.org/en/research/commodity-markets",
+  "retrievedAt": "2026-06-07",
+  "units": "USD per troy ounce",
+  "frequency": "annual",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "termsUrl": "https://www.worldbank.org/en/about/legal/terms-of-use-for-datasets",
+  "attribution": "The World Bank: Commodity Markets Pink Sheet: annual prices.",
+  "data": [
+    {
+      "year": 1960,
+      "value": 35.27
+    },
+    {
+      "year": 1961,
+      "value": 35.25
+    },
+    {
+      "year": 1962,
+      "value": 35.23
+    },
+    {
+      "year": 1963,
+      "value": 35.09
+    },
+    {
+      "year": 1964,
+      "value": 35.1
+    },
+    {
+      "year": 1965,
+      "value": 35.12
+    },
+    {
+      "year": 1966,
+      "value": 35.13
+    },
+    {
+      "year": 1967,
+      "value": 34.95
+    },
+    {
+      "year": 1968,
+      "value": 38.93
+    },
+    {
+      "year": 1969,
+      "value": 41.08
+    },
+    {
+      "year": 1970,
+      "value": 35.94
+    },
+    {
+      "year": 1971,
+      "value": 40.8
+    },
+    {
+      "year": 1972,
+      "value": 58.16
+    },
+    {
+      "year": 1973,
+      "value": 97.33
+    },
+    {
+      "year": 1974,
+      "value": 159.25
+    },
+    {
+      "year": 1975,
+      "value": 161.03
+    },
+    {
+      "year": 1976,
+      "value": 124.82
+    },
+    {
+      "year": 1977,
+      "value": 147.72
+    },
+    {
+      "year": 1978,
+      "value": 193.24
+    },
+    {
+      "year": 1979,
+      "value": 306.67
+    },
+    {
+      "year": 1980,
+      "value": 607.86
+    },
+    {
+      "year": 1981,
+      "value": 459.75
+    },
+    {
+      "year": 1982,
+      "value": 375.8
+    },
+    {
+      "year": 1983,
+      "value": 422.53
+    },
+    {
+      "year": 1984,
+      "value": 360.48
+    },
+    {
+      "year": 1985,
+      "value": 317.91
+    },
+    {
+      "year": 1986,
+      "value": 367.69
+    },
+    {
+      "year": 1987,
+      "value": 446.47
+    },
+    {
+      "year": 1988,
+      "value": 437.05
+    },
+    {
+      "year": 1989,
+      "value": 381.43
+    },
+    {
+      "year": 1990,
+      "value": 383.47
+    },
+    {
+      "year": 1991,
+      "value": 362.18
+    },
+    {
+      "year": 1992,
+      "value": 343.73
+    },
+    {
+      "year": 1993,
+      "value": 359.77
+    },
+    {
+      "year": 1994,
+      "value": 384.01
+    },
+    {
+      "year": 1995,
+      "value": 384.16
+    },
+    {
+      "year": 1996,
+      "value": 387.7
+    },
+    {
+      "year": 1997,
+      "value": 331.1
+    },
+    {
+      "year": 1998,
+      "value": 294.16
+    },
+    {
+      "year": 1999,
+      "value": 278.77
+    },
+    {
+      "year": 2000,
+      "value": 279.03
+    },
+    {
+      "year": 2001,
+      "value": 270.99
+    },
+    {
+      "year": 2002,
+      "value": 309.97
+    },
+    {
+      "year": 2003,
+      "value": 363.51
+    },
+    {
+      "year": 2004,
+      "value": 409.21
+    },
+    {
+      "year": 2005,
+      "value": 444.84
+    },
+    {
+      "year": 2006,
+      "value": 604.34
+    },
+    {
+      "year": 2007,
+      "value": 696.72
+    },
+    {
+      "year": 2008,
+      "value": 871.71
+    },
+    {
+      "year": 2009,
+      "value": 972.97
+    },
+    {
+      "year": 2010,
+      "value": 1224.66
+    },
+    {
+      "year": 2011,
+      "value": 1569.21
+    },
+    {
+      "year": 2012,
+      "value": 1669.52
+    },
+    {
+      "year": 2013,
+      "value": 1411.46
+    },
+    {
+      "year": 2014,
+      "value": 1265.58
+    },
+    {
+      "year": 2015,
+      "value": 1160.66
+    },
+    {
+      "year": 2016,
+      "value": 1248.99
+    },
+    {
+      "year": 2017,
+      "value": 1257.56
+    },
+    {
+      "year": 2018,
+      "value": 1269.23
+    },
+    {
+      "year": 2019,
+      "value": 1392.5
+    },
+    {
+      "year": 2020,
+      "value": 1770.25
+    },
+    {
+      "year": 2021,
+      "value": 1799.63
+    },
+    {
+      "year": 2022,
+      "value": 1800.6
+    },
+    {
+      "year": 2023,
+      "value": 1942.67
+    },
+    {
+      "year": 2024,
+      "value": 2387.7
+    },
+    {
+      "year": 2025,
+      "value": 3441.51
+    }
+  ]
+}

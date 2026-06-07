@@ -1,0 +1,41 @@
+{
+  "retrievedAt": "2026-06-07",
+  "startYear": 1975,
+  "latestCompleteYear": 2025,
+  "methodologyVersion": "1.0",
+  "sources": [
+    {
+      "id": "cpi",
+      "name": "Instituto Nacional de Estadística",
+      "url": "https://servicios.ine.es/wstempus/jsCache/es/DATOS_TABLA/24077?tip=AM&",
+      "license": "INE data reuse terms",
+      "licenseUrl": "https://www.ine.es/aviso_legal",
+      "attribution": "Instituto Nacional de Estadística: Índice de Precios de Consumo."
+    },
+    {
+      "id": "gold",
+      "name": "World Bank Commodity Markets",
+      "url": "https://www.worldbank.org/en/research/commodity-markets",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "termsUrl": "https://www.worldbank.org/en/about/legal/terms-of-use-for-datasets",
+      "attribution": "The World Bank: Commodity Markets Pink Sheet: annual prices."
+    },
+    {
+      "id": "eur-usd",
+      "name": "European Central Bank",
+      "url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip",
+      "license": "ECB data reuse terms",
+      "licenseUrl": "https://www.ecb.europa.eu/services/disclaimer/html/index.en.html",
+      "attribution": "European Central Bank: euro foreign exchange reference rates."
+    },
+    {
+      "id": "esp-usd",
+      "name": "Banco de España",
+      "url": "https://www.bde.es/webbe/es/estadisticas/temas/tipos-cambio.html",
+      "license": "Banco de España data reuse terms",
+      "licenseUrl": "https://www.bde.es/wbe/es/pie/aviso-legal/",
+      "attribution": "Banco de España: historical exchange rates."
+    }
+  ]
+}

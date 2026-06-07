@@ -1,0 +1,121 @@
+{
+  "id": "eur-usd-annual",
+  "source": "European Central Bank",
+  "sourceUrl": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip",
+  "retrievedAt": "2026-06-07",
+  "units": "USD per EUR",
+  "license": "ECB data reuse terms",
+  "licenseUrl": "https://www.ecb.europa.eu/services/disclaimer/html/index.en.html",
+  "attribution": "European Central Bank: euro foreign exchange reference rates.",
+  "frequency": "annual",
+  "data": [
+    {
+      "year": 1999,
+      "value": 1.0657764478764478
+    },
+    {
+      "year": 2000,
+      "value": 0.9236125490196074
+    },
+    {
+      "year": 2001,
+      "value": 0.8956295275590546
+    },
+    {
+      "year": 2002,
+      "value": 0.9455737254901962
+    },
+    {
+      "year": 2003,
+      "value": 1.131160392156862
+    },
+    {
+      "year": 2004,
+      "value": 1.243902316602317
+    },
+    {
+      "year": 2005,
+      "value": 1.2440902723735408
+    },
+    {
+      "year": 2006,
+      "value": 1.2555988235294109
+    },
+    {
+      "year": 2007,
+      "value": 1.370478039215687
+    },
+    {
+      "year": 2008,
+      "value": 1.4707554687500008
+    },
+    {
+      "year": 2009,
+      "value": 1.3947824218749993
+    },
+    {
+      "year": 2010,
+      "value": 1.3257166666666678
+    },
+    {
+      "year": 2011,
+      "value": 1.391955252918288
+    },
+    {
+      "year": 2012,
+      "value": 1.2847886718749995
+    },
+    {
+      "year": 2013,
+      "value": 1.3281180392156864
+    },
+    {
+      "year": 2014,
+      "value": 1.3285007843137249
+    },
+    {
+      "year": 2015,
+      "value": 1.1095128906250007
+    },
+    {
+      "year": 2016,
+      "value": 1.1069031128404665
+    },
+    {
+      "year": 2017,
+      "value": 1.1296811764705874
+    },
+    {
+      "year": 2018,
+      "value": 1.1809545098039216
+    },
+    {
+      "year": 2019,
+      "value": 1.1194745098039223
+    },
+    {
+      "year": 2020,
+      "value": 1.1421961089494168
+    },
+    {
+      "year": 2021,
+      "value": 1.18274031007752
+    },
+    {
+      "year": 2022,
+      "value": 1.0530486381322954
+    },
+    {
+      "year": 2023,
+      "value": 1.0812686274509802
+    },
+    {
+      "year": 2024,
+      "value": 1.0823804687500003
+    },
+    {
+      "year": 2025,
+      "value": 1.1299831372549018
+    }
+  ]
+}
