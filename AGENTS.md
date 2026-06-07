@@ -14,10 +14,13 @@ See `README.md` for setup commands, `ROADMAP.md` for product decisions, and `DES
 ## Package Manager And Commands
 
 - Use `pnpm`, not npm or yarn.
+- Use Node.js `>=22.12.0`.
 - Install dependencies with `pnpm install`.
 - Start development with `pnpm dev`.
 - Build with `pnpm build`.
 - Preview builds with `pnpm preview`.
+- Update static datasets with `pnpm data:update`.
+- Validate committed datasets with `pnpm data:validate`.
 
 Before considering code changes complete, run the relevant checks. For broad changes, run all of them:
 
@@ -28,6 +31,8 @@ pnpm format:check
 pnpm test:run
 pnpm build
 ```
+
+For data pipeline changes, also run `pnpm data:validate`. CI runs coverage with `pnpm coverage`; use it when touching tested calculation, data, or validation logic.
 
 If a check fails, fix the root cause instead of weakening the check.
 
@@ -70,8 +75,11 @@ The project standard is:
 - Use real, reputable sources for inflation, gold prices, and exchange rates.
 - Do not fetch external data directly from the browser for normal page loads.
 - Prefer static JSON files under `public/data/` generated or validated by scripts.
+- Current generated datasets are `cpi-spain-annual.json`, `gold-annual.json`, `eur-usd-annual.json`, `esp-usd-annual.json`, `calculation-data.json`, and `metadata.json`.
 - Include source name, source URL, units, and last updated date in datasets.
 - Keep calculations transparent and document assumptions in methodology content.
+- Prefer changing `scripts/data/` normalizers, builders, or validators over manually editing generated JSON.
+- Data updates are handled by `scripts/data/update-data.ts` and the monthly GitHub Actions workflow that opens a pull request.
 
 ## Workflow
 
@@ -86,7 +94,13 @@ The project standard is:
 
 - Use Vitest for unit tests, especially `src/lib/` calculation and formatting logic.
 - Add or update tests when changing calculation behavior.
+- Add or update tests when changing data normalization, generated calculation data, or validation behavior.
 - For UI-only placeholder changes, `pnpm check`, `pnpm lint`, `pnpm format:check`, and `pnpm build` may be enough.
+
+## Styling Guidance
+
+- `src/styles/tokens.css` implements the design tokens from `DESIGN.md`.
+- Keep CSS lightweight and layered with `@layer tokens, base, components`.
 
 ## Documentation
 
