@@ -2,6 +2,7 @@
 import { calculateGoldCoins } from '../lib/calculate';
 import { GOLD_COIN_FINE_GOLD_GRAMS } from '../lib/constants';
 import calculationData from '../../public/data/calculation-data.json';
+import metadata from '../../public/data/metadata.json';
 
 import '../styles/global.css';
 
@@ -22,6 +23,13 @@ if (!Number.isFinite(goldEurPerGram) || goldEurPerGram <= 0) {
   );
 }
 
+const goldSource = metadata.sources.find((s) => s.id === 'gold');
+const ecbSource = metadata.sources.find((s) => s.id === 'eur-usd');
+
+if (!goldSource || !ecbSource) {
+  throw new Error('Metadata must include gold and eur-usd sources');
+}
+
 const initialMonthlyCoins = calculateGoldCoins(
   DEFAULT_SALARY_EUR,
   goldEurPerGram,
@@ -35,6 +43,14 @@ const coinFormatter = new Intl.NumberFormat('es-ES', {
   maximumFractionDigits: 2,
   minimumFractionDigits: 2,
 });
+const goldEurFormatter = new Intl.NumberFormat('es-ES', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+const retrievedDateFormatted = new Intl.DateTimeFormat('es-ES', {
+  dateStyle: 'long',
+  timeZone: 'UTC',
+}).format(new Date(`${metadata.retrievedAt}T00:00:00Z`));
 ---
 
 <!doctype html>
@@ -109,6 +125,122 @@ const coinFormatter = new Intl.NumberFormat('es-ES', {
           </span>
         </output>
       </form>
+
+      <section class="trust-section" aria-labelledby="transparencia-titulo">
+        <p class="eyebrow">Transparencia</p>
+        <h2 id="transparencia-titulo">Transparencia del cálculo</h2>
+
+        <div class="trust-grid">
+          <article class="trust-card trust-card--methodology">
+            <h3>Metodología</h3>
+            <p>
+              El cálculo actual convierte tu salario neto mensual en monedas de
+              oro usando el precio anual del oro en euros.
+            </p>
+            <pre><code>monedas mensuales = salario neto mensual / precio anual del oro en €/g / 5,81
+monedas anuales = monedas mensuales × pagas</code></pre>
+            <p>
+              1 moneda de oro = 5,81 gramos de oro fino. Es una referencia
+              histórica abstracta inspirada en monedas europeas como las 20
+              pesetas, los 20 francos franceses o los 20 francos suizos. No
+              representa una moneda legal actual ni una pieza concreta de
+              coleccionismo.
+            </p>
+          </article>
+
+          <article class="trust-card trust-card--data">
+            <h3>Datos utilizados</h3>
+            <dl class="data-facts">
+              <dt>Último año completo</dt>
+              <dd>{latestRow.year}</dd>
+
+              <dt>Precio del oro</dt>
+              <dd>{goldEurFormatter.format(goldEurPerGram)} €/g</dd>
+
+              <dt>Conjunto de datos obtenido</dt>
+              <dd>{retrievedDateFormatted}</dd>
+
+              <dt>Versión de metodología</dt>
+              <dd>v{metadata.methodologyVersion}</dd>
+            </dl>
+          </article>
+
+          <article class="trust-card trust-card--sources">
+            <h3>Fuentes</h3>
+            <p>Datos usados en el cálculo de esta página:</p>
+            <ul class="source-list">
+              <li>
+                <a
+                  href={goldSource.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {goldSource.name}
+                  <span class="sr-only">(abre en una pestaña nueva)</span>
+                </a>
+                — precio anual del oro en USD/onza troy (Pink Sheet · datos históricos
+                anuales).
+              </li>
+              <li>
+                <a
+                  href={ecbSource.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {ecbSource.name}
+                  <span class="sr-only">(abre en una pestaña nueva)</span>
+                </a>
+                — tipo de cambio EUR/USD de referencia.
+              </li>
+            </ul>
+            <p>
+              Código fuente del proyecto:
+              <a
+                href="https://github.com/Arturoloma/salario-en-oro"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                github.com/Arturoloma/salario-en-oro
+                <span class="sr-only">(abre en una pestaña nueva)</span>
+              </a>
+            </p>
+          </article>
+
+          <article class="trust-card trust-card--privacy">
+            <h3>Privacidad</h3>
+            <p>
+              El salario que introduces no se envía a ningún servidor. Todo el
+              cálculo se ejecuta en tu navegador.
+            </p>
+            <p>
+              En esta versión no hay cuentas de usuario, formularios de envío ni
+              cookies de seguimiento.
+            </p>
+          </article>
+        </div>
+
+        <article class="trust-card trust-card--disclaimer">
+          <h3>Limitaciones y aviso</h3>
+          <ul class="limitation-list">
+            <li>
+              Se usan medias anuales del precio del oro y del tipo de cambio; no
+              son precios intradía en tiempo real.
+            </li>
+            <li>
+              No se incluyen comisiones, impuestos, spreads, costes de custodia
+              ni primas de coleccionismo.
+            </li>
+            <li>
+              Esto no es asesoramiento financiero. Es una herramienta educativa
+              y de interés público.
+            </li>
+            <li>
+              Las estimaciones se basan en datos históricos anuales y pueden no
+              reflejar el valor exacto en un momento concreto.
+            </li>
+          </ul>
+        </article>
+      </section>
     </main>
 
     <script type="module" is:inline>

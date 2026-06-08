@@ -50,9 +50,6 @@ Basic source scaffold:
 src/
   pages/
     index.astro
-    metodologia.astro
-    fuentes.astro
-    privacidad.astro
   styles/
     global.css
   lib/
@@ -64,6 +61,8 @@ public/
   data/
     .gitkeep
 ```
+
+The MVP is a single-page application. Methodology, source links, privacy note, disclaimer, and source-code link are embedded directly on the homepage rather than living on separate pages.
 
 Core constants:
 
@@ -317,9 +316,6 @@ Avoid initially:
 src/
   pages/
     index.astro
-    metodologia.astro
-    fuentes.astro
-    privacidad.astro
   components/
     SalaryCalculator.ts
     ResultsSummary.astro
@@ -418,35 +414,14 @@ Contains:
 - Salary calculator.
 - Results.
 - Chart.
-- Source summary.
+- Methodology summary with formulas.
+- Data facts (latest year, gold price, dataset date, methodology version).
+- Source links (World Bank Commodity Markets, European Central Bank).
+- Source code link (GitHub).
+- Privacy note.
+- Limitations and disclaimer.
 
-### 11.2 Methodology
-
-Contains:
-
-- CPI formula.
-- Gold conversion formula.
-- Peseta/euro handling.
-- Limitations.
-- Data sources.
-
-### 11.3 Sources
-
-Contains:
-
-- INE link.
-- ECB link.
-- Banco de Espana link.
-- World Gold Council link.
-- Last data update date.
-
-### 11.4 Privacy
-
-Contains:
-
-- Analytics disclosure, if analytics are used.
-- Statement that salaries are calculated locally in the browser.
-- Statement that salary inputs are not stored.
+The MVP is single-page. Methodology, sources, privacy, and disclaimer content is embedded directly on the homepage instead of on separate pages.
 
 ## 12. Licensing
 
@@ -644,15 +619,14 @@ Output:
 
 Tasks:
 
-- Add methodology page.
-- Add sources page.
-- Add privacy page.
-- Add data freshness indicator.
-- Add disclaimer.
+- Add methodology, formulas, and assumptions to the homepage.
+- Add source links and data freshness indicator to the homepage.
+- Add privacy note and disclaimer to the homepage.
+- Add source code link.
 
 Output:
 
-- Product is understandable and credible.
+- Product is understandable and credible from a single page.
 
 ### Phase 5: Automated Updates
 

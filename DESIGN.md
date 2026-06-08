@@ -629,11 +629,11 @@ Example:
 Datos utilizados
 
 ✓ IPC - INE
-✓ Precio del oro - LBMA
+✓ Precio del oro - World Bank
 ✓ Tipo de cambio USD/EUR - BCE
 ✓ Conversion EUR/ESP - historica
 
-Ver metodologia completa
+Ir a Transparencia del calculo (#transparencia-titulo)
 ```
 
 Rules:
@@ -728,7 +728,7 @@ Rules:
 
 ### Footer Navigation
 
-Suggested links: `Sobre el proyecto`, `Metodologia`, `Fuentes`, `FAQ`, `Blog`, `Contacto`.
+Suggested links: `Sobre el proyecto`, `FAQ`, `Blog`, `Contacto`. The MVP is single-page; methodology, sources, privacy, and disclaimer are embedded on the homepage.
 
 ## Do's and Don'ts
 
@@ -908,7 +908,7 @@ Required source attribution:
 Fuentes de datos
 
 INE - Indice de Precios al Consumo
-LBMA - Precio del oro
+World Bank Commodity Markets - Pink Sheet (precio del oro)
 BCE - Tipo de cambio USD/EUR
 Conversion historica EUR/ESP
 ```
@@ -940,12 +940,12 @@ Esta herramienta tiene fines educativos y de interes publico.
 Los resultados son estimaciones basadas en fuentes historicas.
 ```
 
-Recommended methodology links:
+Recommended methodology links (as in-page anchors to the `Transparencia del cálculo` section):
 
-- `Ver metodologia completa`.
-- `Ver fuentes de datos`.
-- `Como se calcula`.
-- `Revisar supuestos`.
+- `Ver metodologia` → scroll to the methodology card.
+- `Ver fuentes de datos` → scroll to the sources card.
+- `Como se calcula` → scroll to the methodology card.
+- `Revisar supuestos` → scroll to the disclaimer card.
 
 ## Accessibility
 
@@ -1028,7 +1028,7 @@ Methodology/source snippet:
 Datos utilizados
 
 ✓ IPC - INE
-✓ Precio del oro - LBMA
+✓ Precio del oro - World Bank Commodity Markets (Pink Sheet)
 ✓ Tipo de cambio USD/EUR - BCE
 ✓ Conversion EUR/ESP - historica
 

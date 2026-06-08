@@ -28,7 +28,7 @@ This unit is inspired by historical European gold coins such as Spanish 20 peset
 - The current UI uses the latest complete annual `goldEurPerGram` value from `public/data/calculation-data.json`.
 - Core calculation helpers for CPI adjustment, gold grams, gold coins, and EUR/ESP conversion live in `src/lib/calculate.ts`.
 - Static datasets are generated and validated under `public/data/`.
-- `metodologia`, `fuentes`, and `privacidad` pages exist as placeholder content.
+- The homepage includes an embedded trust section with methodology, formulas, data facts, source links (World Bank, ECB), a link to the GitHub source code, a privacy note, and a limitations/disclaimer block.
 - The full historical comparison UI described in `ROADMAP.md` is not implemented yet.
 
 ## Local Setup
@@ -104,9 +104,6 @@ pnpm coverage
 src/
   pages/
     index.astro
-    metodologia.astro
-    fuentes.astro
-    privacidad.astro
   lib/
     constants.ts
     types.ts
