@@ -14,6 +14,63 @@ export function calculateInflationAdjustedSalary(
   return (currentSalary * targetYearCpi) / currentYearCpi;
 }
 
+export function calculateCpiAdjustedSalary(
+  salary: number,
+  sourceYearCpi: number,
+  targetYearCpi: number,
+): number {
+  assertPositiveFinite(sourceYearCpi, 'sourceYearCpi');
+  assertPositiveFinite(targetYearCpi, 'targetYearCpi');
+  return (salary * targetYearCpi) / sourceYearCpi;
+}
+
+export type SalaryGoldComparisonInput = {
+  pastSalaryEur: number;
+  currentSalaryEur: number;
+  pastYearCpi: number;
+  currentYearCpi: number;
+  pastGoldEurPerGram: number;
+  currentGoldEurPerGram: number;
+};
+
+export type SalaryGoldComparison = {
+  pastGoldCoins: number;
+  inflationAdjustedSalaryEur: number;
+  inflationAdjustedGoldCoinsAtCurrentPrice: number;
+  currentGoldCoins: number;
+};
+
+export function calculateSalaryGoldComparison({
+  pastSalaryEur,
+  currentSalaryEur,
+  pastYearCpi,
+  currentYearCpi,
+  pastGoldEurPerGram,
+  currentGoldEurPerGram,
+}: SalaryGoldComparisonInput): SalaryGoldComparison {
+  const pastGoldCoins = calculateGoldCoins(pastSalaryEur, pastGoldEurPerGram);
+  const inflationAdjustedSalaryEur = calculateCpiAdjustedSalary(
+    pastSalaryEur,
+    pastYearCpi,
+    currentYearCpi,
+  );
+  const inflationAdjustedGoldCoinsAtCurrentPrice = calculateGoldCoins(
+    inflationAdjustedSalaryEur,
+    currentGoldEurPerGram,
+  );
+  const currentGoldCoins = calculateGoldCoins(
+    currentSalaryEur,
+    currentGoldEurPerGram,
+  );
+
+  return {
+    pastGoldCoins,
+    inflationAdjustedSalaryEur,
+    inflationAdjustedGoldCoinsAtCurrentPrice,
+    currentGoldCoins,
+  };
+}
+
 export function calculateGoldGrams(
   salaryEur: number,
   goldEurPerGram: number,

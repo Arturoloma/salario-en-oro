@@ -1,43 +1,58 @@
 ---
-import { calculateGoldCoins } from '../lib/calculate';
-import { GOLD_COIN_FINE_GOLD_GRAMS } from '../lib/constants';
+import {
+  calculateSalaryGoldComparison,
+  convertEspToEur,
+} from '../lib/calculate';
+import { EUR_TO_ESP, GOLD_COIN_FINE_GOLD_GRAMS } from '../lib/constants';
 import calculationData from '../../public/data/calculation-data.json';
 import metadata from '../../public/data/metadata.json';
 
 import '../styles/global.css';
 
-const DEFAULT_SALARY_EUR = 1500;
-const DEFAULT_PAGAS = 12;
+const DEFAULT_PAST_YEAR = 1975;
+const DEFAULT_PAST_SALARY_ESP = 2_500_000;
+const DEFAULT_CURRENT_SALARY_EUR = 31_000;
 
-const latestRow = [...calculationData.data].sort((a, b) => b.year - a.year)[0];
+const calculationRows = [...calculationData.data].sort(
+  (a, b) => a.year - b.year,
+);
+const latestRow = calculationRows[calculationRows.length - 1];
+const initialPastRow =
+  calculationRows.find((row) => row.year === DEFAULT_PAST_YEAR) ??
+  calculationRows[0];
 
-if (!latestRow) {
+if (!latestRow || !initialPastRow) {
   throw new Error('Calculation data must include at least one row');
 }
 
-const goldEurPerGram = latestRow.goldEurPerGram;
+const cpiSource = metadata.sources.find((s) => s.id === 'cpi');
+const goldSource = metadata.sources.find((s) => s.id === 'gold');
+const ecbSource = metadata.sources.find((s) => s.id === 'eur-usd');
+const bdeSource = metadata.sources.find((s) => s.id === 'esp-usd');
 
-if (!Number.isFinite(goldEurPerGram) || goldEurPerGram <= 0) {
+if (!cpiSource || !goldSource || !ecbSource || !bdeSource) {
   throw new Error(
-    'Latest calculation row must include a positive goldEurPerGram',
+    'Metadata must include CPI, gold, EUR/USD, and ESP/USD sources',
   );
 }
 
-const goldSource = metadata.sources.find((s) => s.id === 'gold');
-const ecbSource = metadata.sources.find((s) => s.id === 'eur-usd');
+const initialPastSalaryEur = convertEspToEur(DEFAULT_PAST_SALARY_ESP);
+const initialComparison = calculateSalaryGoldComparison({
+  pastSalaryEur: initialPastSalaryEur,
+  currentSalaryEur: DEFAULT_CURRENT_SALARY_EUR,
+  pastYearCpi: initialPastRow.cpiIndex,
+  currentYearCpi: latestRow.cpiIndex,
+  pastGoldEurPerGram: initialPastRow.goldEurPerGram,
+  currentGoldEurPerGram: latestRow.goldEurPerGram,
+});
 
-if (!goldSource || !ecbSource) {
-  throw new Error('Metadata must include gold and eur-usd sources');
-}
-
-const initialMonthlyCoins = calculateGoldCoins(
-  DEFAULT_SALARY_EUR,
-  goldEurPerGram,
-);
-const initialAnnualCoins = initialMonthlyCoins * DEFAULT_PAGAS;
-
-const numberFormatter = new Intl.NumberFormat('es-ES', {
-  maximumFractionDigits: 2,
+const eurFormatter = new Intl.NumberFormat('es-ES', {
+  currency: 'EUR',
+  maximumFractionDigits: 0,
+  style: 'currency',
+});
+const espFormatter = new Intl.NumberFormat('es-ES', {
+  maximumFractionDigits: 0,
 });
 const coinFormatter = new Intl.NumberFormat('es-ES', {
   maximumFractionDigits: 2,
@@ -47,10 +62,41 @@ const goldEurFormatter = new Intl.NumberFormat('es-ES', {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
+const percentFormatter = new Intl.NumberFormat('es-ES', {
+  maximumFractionDigits: 1,
+  style: 'percent',
+});
 const retrievedDateFormatted = new Intl.DateTimeFormat('es-ES', {
   dateStyle: 'long',
   timeZone: 'UTC',
 }).format(new Date(`${metadata.retrievedAt}T00:00:00Z`));
+
+function formatCoinDifference(currentCoins: number, referenceCoins: number) {
+  if (referenceCoins === 0) {
+    return 'sin una referencia comparable';
+  }
+
+  const difference = (currentCoins - referenceCoins) / referenceCoins;
+
+  if (Math.abs(difference) < 0.005) {
+    return 'prácticamente lo mismo';
+  }
+
+  const formattedDifference = percentFormatter.format(Math.abs(difference));
+  return difference < 0
+    ? `${formattedDifference} menos`
+    : `${formattedDifference} más`;
+}
+
+const initialDirectGoldDifference = formatCoinDifference(
+  initialComparison.currentGoldCoins,
+  initialComparison.pastGoldCoins,
+);
+const initialAdjustedGoldDifference = formatCoinDifference(
+  initialComparison.currentGoldCoins,
+  initialComparison.inflationAdjustedGoldCoinsAtCurrentPrice,
+);
+const calculationRowsJson = JSON.stringify(calculationRows);
 ---
 
 <!doctype html>
@@ -59,103 +105,316 @@ const retrievedDateFormatted = new Intl.DateTimeFormat('es-ES', {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
-    <title>Salario en Oro</title>
+    <meta
+      name="description"
+      content="Compara una renta del pasado con una renta actual usando inflación y monedas de oro para entender el valor real del dinero."
+    />
+    <title>Salario en Oro | Valor real de tu dinero</title>
   </head>
   <body>
-    <main class="page-shell calculator-page">
-      <p class="eyebrow">Salario en Oro</p>
-      <h1>Calcula tu salario en monedas de oro</h1>
-
-      <form
-        class="calculator"
-        data-gold-eur-per-gram={goldEurPerGram}
-        data-gold-coin-fine-gold-grams={GOLD_COIN_FINE_GOLD_GRAMS}
-      >
-        <div class="field-group">
-          <label for="salary">Tu salario neto mensual</label>
-          <div class="input-wrap">
-            <input
-              id="salary"
-              name="salary"
-              type="number"
-              inputmode="decimal"
-              min="0"
-              step="0.01"
-              value={DEFAULT_SALARY_EUR}
-            />
-            <span aria-hidden="true">€/mes</span>
-          </div>
+    <main class="page-shell">
+      <section class="hero-section" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Salario en Oro</p>
+          <h1 id="hero-title">Tu sueldo no vale lo que dice el número.</h1>
+          <p class="hero-lead">
+            El dinero cambia de valor con el tiempo. Esta calculadora compara
+            una renta del pasado y una actual en euros ajustados por inflación y
+            en monedas de oro.
+          </p>
+          <a class="button-link" href="#calculadora">Comparar valor real</a>
         </div>
 
-        <fieldset class="radio-group" id="pagas-fieldset">
-          <legend>Pagas</legend>
-          <div class="radio-options">
-            <label class="radio-label">
-              <input
-                type="radio"
-                id="pagas-12"
-                name="pagas"
-                value="12"
-                checked
-              />
-              <span>12 pagas</span>
-            </label>
-            <label class="radio-label">
-              <input type="radio" id="pagas-14" name="pagas" value="14" />
-              <span>14 pagas</span>
-            </label>
-          </div>
-        </fieldset>
+        <aside class="hero-note" aria-label="Idea central">
+          <span>El número sube.</span>
+          <strong>La pregunta es si el valor también.</strong>
+        </aside>
+      </section>
 
-        <output
-          class="result-card"
-          id="result"
-          for="salary pagas-12 pagas-14"
-          aria-live="polite"
-          aria-atomic="true"
+      <section
+        class="copy-section copy-section--unit"
+        aria-labelledby="unidad-titulo"
+      >
+        <p class="eyebrow">La trampa está en la unidad</p>
+        <h2 id="unidad-titulo">No compares cifras. Compara valor real.</h2>
+        <p>
+          Comparar una cifra antigua con una cifra actual como si fueran la
+          misma unidad puede ser engañoso. Una peseta de 1975, un euro de 2002 y
+          un euro de hoy no representan el mismo valor real.
+        </p>
+        <p class="statement-line">
+          El número puede subir mientras el valor real baja.
+        </p>
+      </section>
+
+      <section
+        class="copy-section copy-section--gold"
+        aria-labelledby="oro-titulo"
+      >
+        <div>
+          <p class="eyebrow">Cambio de perspectiva</p>
+          <h2 id="oro-titulo">¿Y si te hubieran pagado en oro?</h2>
+        </div>
+        <p>
+          Si convertimos una renta antigua a oro en su propio año, vemos cuántos
+          gramos de oro compraba realmente entonces. Muchas veces, una cantidad
+          que parece pequeña en euros o pesetas compraba más oro que una renta
+          mucho mayor de hoy.
+        </p>
+      </section>
+
+      <section
+        class="calculator-section"
+        id="calculadora"
+        aria-labelledby="calculadora-titulo"
+      >
+        <div class="section-heading">
+          <p class="eyebrow">Calculadora</p>
+          <h2 id="calculadora-titulo">Compara dos rentas</h2>
+          <p>
+            Introduce una renta anual del pasado y una renta anual actual. La
+            calculadora usa el último año completo disponible en los datos:
+            {latestRow.year}.
+          </p>
+        </div>
+
+        <form
+          class="calculator historical-calculator"
+          data-current-year={latestRow.year}
+          data-eur-to-esp={EUR_TO_ESP}
+          data-gold-coin-fine-gold-grams={GOLD_COIN_FINE_GOLD_GRAMS}
         >
-          <span class="result-text" id="result-text">
-            {numberFormatter.format(DEFAULT_SALARY_EUR)} €/mes equivalen a
-          </span>
-          <strong id="result-value-primary">
-            {coinFormatter.format(initialMonthlyCoins)} monedas de oro al mes
-          </strong>
-          <span id="result-value-secondary" class="result-value-secondary">
-            {coinFormatter.format(initialAnnualCoins)} monedas de oro al año
-          </span>
-        </output>
-      </form>
+          <div class="form-grid">
+            <div class="field-group">
+              <label for="past-year">Año de la renta pasada</label>
+              <select class="control" id="past-year" name="pastYear">
+                {
+                  calculationRows.map((row) => (
+                    <option
+                      value={row.year}
+                      selected={row.year === DEFAULT_PAST_YEAR}
+                    >
+                      {row.year}
+                    </option>
+                  ))
+                }
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label for="past-amount">Renta pasada anual</label>
+              <div class="input-wrap">
+                <input
+                  id="past-amount"
+                  name="pastAmount"
+                  type="number"
+                  inputmode="decimal"
+                  min="0"
+                  step="0.01"
+                  value={DEFAULT_PAST_SALARY_ESP}
+                />
+                <span id="past-amount-unit" aria-hidden="true">pesetas/año</span
+                >
+              </div>
+            </div>
+
+            <fieldset class="radio-group">
+              <legend>Moneda de la renta pasada</legend>
+              <div class="radio-options">
+                <label class="radio-label">
+                  <input type="radio" name="pastCurrency" value="ESP" checked />
+                  <span>Pesetas</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="pastCurrency" value="EUR" />
+                  <span>Euros</span>
+                </label>
+              </div>
+              <p class="field-hint">
+                Si una cifra antigua ya está en euros constantes o ajustados por
+                inflación, no la vuelvas a ajustar por IPC.
+              </p>
+            </fieldset>
+
+            <div class="field-group">
+              <label for="current-amount">Renta actual anual</label>
+              <div class="input-wrap">
+                <input
+                  id="current-amount"
+                  name="currentAmount"
+                  type="number"
+                  inputmode="decimal"
+                  min="0"
+                  step="0.01"
+                  value={DEFAULT_CURRENT_SALARY_EUR}
+                />
+                <span aria-hidden="true">€/año</span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="results-panel"
+            id="result"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            <p class="result-context" id="result-context">
+              Comparando {espFormatter.format(DEFAULT_PAST_SALARY_ESP)} pesetas de
+              {DEFAULT_PAST_YEAR} con {
+                eurFormatter.format(DEFAULT_CURRENT_SALARY_EUR)
+              }
+              en {latestRow.year}.
+            </p>
+
+            <div class="result-grid">
+              <article class="result-card result-card--gold-past">
+                <span class="result-label">Valor en oro entonces</span>
+                <strong>
+                  <output id="past-gold-coins">
+                    {coinFormatter.format(initialComparison.pastGoldCoins)} monedas
+                  </output>
+                </strong>
+                <p id="past-gold-detail">
+                  En {DEFAULT_PAST_YEAR}, esta renta compraba esa cantidad de
+                  monedas de oro.
+                </p>
+              </article>
+
+              <article class="result-card result-card--inflation">
+                <span class="result-label">Valor real en euros actuales</span>
+                <strong>
+                  <output id="inflation-adjusted-eur">
+                    {
+                      eurFormatter.format(
+                        initialComparison.inflationAdjustedSalaryEur,
+                      )
+                    }
+                  </output>
+                </strong>
+                <p id="inflation-detail">
+                  Ajustada por inflación, equivale a esta cantidad en euros
+                  actuales.
+                </p>
+              </article>
+
+              <article class="result-card result-card--gold-adjusted">
+                <span class="result-label">Ese valor real en oro actual</span>
+                <strong>
+                  <output id="adjusted-current-gold-coins">
+                    {
+                      coinFormatter.format(
+                        initialComparison.inflationAdjustedGoldCoinsAtCurrentPrice,
+                      )
+                    } monedas
+                  </output>
+                </strong>
+                <p id="adjusted-gold-detail">
+                  Ese equivalente compraría hoy esta cantidad de monedas de oro.
+                </p>
+              </article>
+
+              <article class="result-card result-card--gold-current">
+                <span class="result-label">Tu renta actual en oro</span>
+                <strong>
+                  <output id="current-gold-coins">
+                    {coinFormatter.format(initialComparison.currentGoldCoins)} monedas
+                  </output>
+                </strong>
+                <p id="current-gold-detail">
+                  Tu renta actual compra esta cantidad de monedas de oro hoy.
+                </p>
+              </article>
+            </div>
+
+            <p class="result-verdict" id="result-verdict">
+              Medida directamente en oro, la renta actual compra {
+                initialDirectGoldDifference
+              } que la renta pasada compraba en {DEFAULT_PAST_YEAR}. Frente al
+              equivalente ajustado por inflación, compra {
+                initialAdjustedGoldDifference
+              }.
+            </p>
+          </div>
+        </form>
+      </section>
+
+      <section
+        class="interpretation-section"
+        aria-labelledby="interpretacion-titulo"
+      >
+        <div class="section-heading">
+          <p class="eyebrow">Lectura</p>
+          <h2 id="interpretacion-titulo">Qué revela cada medida</h2>
+        </div>
+
+        <div class="interpretation-grid">
+          <article>
+            <h3>Inflación</h3>
+            <p>
+              Responde a una pregunta concreta: qué cantidad de dinero actual
+              tendría un poder adquisitivo parecido.
+            </p>
+          </article>
+          <article>
+            <h3>Oro</h3>
+            <p>
+              Cambia la unidad por completo: no pregunta cuántos euros eran,
+              sino cuántos gramos de oro representaban.
+            </p>
+          </article>
+          <article>
+            <h3>Valor real</h3>
+            <p>
+              Ninguna medida cuenta toda la historia, pero juntas muestran si
+              una comparación nominal está ocultando pérdida de valor.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section
+        class="copy-section copy-section--claim"
+        aria-labelledby="cifra-titulo"
+      >
+        <p class="eyebrow">Cuando una cifra parece espectacular</p>
+        <h2 id="cifra-titulo">
+          Una renta puede duplicarse en euros y no duplicar su valor.
+        </h2>
+        <p>
+          Decir que una renta “se ha duplicado” puede sonar impresionante. Pero
+          si la comparación no aclara inflación, poder adquisitivo y unidad de
+          medida, la conclusión está incompleta.
+        </p>
+      </section>
 
       <section class="trust-section" aria-labelledby="transparencia-titulo">
         <p class="eyebrow">Transparencia</p>
-        <h2 id="transparencia-titulo">Transparencia del cálculo</h2>
+        <h2 id="transparencia-titulo">Metodología y límites</h2>
 
         <div class="trust-grid">
           <article class="trust-card trust-card--methodology">
-            <h3>Metodología</h3>
+            <h3>Fórmulas</h3>
+            <pre><code>renta_pasada_eur = pesetas / 166,386
+equivalente_actual = renta_pasada_eur × IPC_actual / IPC_año_pasado
+monedas_en_su_año = renta_pasada_eur / oro_€/g_año / 5,81
+monedas_equivalente_hoy = equivalente_actual / oro_€/g_actual / 5,81
+monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
             <p>
-              El cálculo actual convierte tu salario neto mensual en monedas de
-              oro usando el precio anual del oro en euros.
-            </p>
-            <pre><code>monedas mensuales = salario neto mensual / precio anual del oro en €/g / 5,81
-monedas anuales = monedas mensuales × pagas</code></pre>
-            <p>
-              1 moneda de oro = 5,81 gramos de oro fino. Es una referencia
-              histórica abstracta inspirada en monedas europeas como las 20
-              pesetas, los 20 francos franceses o los 20 francos suizos. No
-              representa una moneda legal actual ni una pieza concreta de
-              coleccionismo.
+              En esta web, 1 moneda de oro = 5,81 gramos de oro fino. Es una
+              unidad histórica abstracta, no una recomendación de inversión ni
+              una pieza concreta de coleccionismo.
             </p>
           </article>
 
           <article class="trust-card trust-card--data">
             <h3>Datos utilizados</h3>
             <dl class="data-facts">
-              <dt>Último año completo</dt>
-              <dd>{latestRow.year}</dd>
+              <dt>Años disponibles</dt>
+              <dd>{calculationRows[0]?.year} - {latestRow.year}</dd>
 
-              <dt>Precio del oro</dt>
-              <dd>{goldEurFormatter.format(goldEurPerGram)} €/g</dd>
+              <dt>Último precio del oro</dt>
+              <dd>{goldEurFormatter.format(latestRow.goldEurPerGram)} €/g</dd>
 
               <dt>Conjunto de datos obtenido</dt>
               <dd>{retrievedDateFormatted}</dd>
@@ -171,6 +430,17 @@ monedas anuales = monedas mensuales × pagas</code></pre>
             <ul class="source-list">
               <li>
                 <a
+                  href={cpiSource.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {cpiSource.name}
+                  <span class="sr-only">(abre en una pestaña nueva)</span>
+                </a>
+                — IPC anual de España.
+              </li>
+              <li>
+                <a
                   href={goldSource.url}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -178,8 +448,7 @@ monedas anuales = monedas mensuales × pagas</code></pre>
                   {goldSource.name}
                   <span class="sr-only">(abre en una pestaña nueva)</span>
                 </a>
-                — precio anual del oro en USD/onza troy (Pink Sheet · datos históricos
-                anuales).
+                — precio anual del oro en USD/onza troy.
               </li>
               <li>
                 <a
@@ -191,6 +460,17 @@ monedas anuales = monedas mensuales × pagas</code></pre>
                   <span class="sr-only">(abre en una pestaña nueva)</span>
                 </a>
                 — tipo de cambio EUR/USD de referencia.
+              </li>
+              <li>
+                <a
+                  href={bdeSource.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {bdeSource.name}
+                  <span class="sr-only">(abre en una pestaña nueva)</span>
+                </a>
+                — tipos de cambio históricos de la peseta.
               </li>
             </ul>
             <p>
@@ -209,8 +489,8 @@ monedas anuales = monedas mensuales × pagas</code></pre>
           <article class="trust-card trust-card--privacy">
             <h3>Privacidad</h3>
             <p>
-              El salario que introduces no se envía a ningún servidor. Todo el
-              cálculo se ejecuta en tu navegador.
+              Las cantidades que introduces no se envían a ningún servidor. Todo
+              el cálculo se ejecuta en tu navegador con datos estáticos.
             </p>
             <p>
               En esta versión no hay cuentas de usuario, formularios de envío ni
@@ -223,100 +503,223 @@ monedas anuales = monedas mensuales × pagas</code></pre>
           <h3>Limitaciones y aviso</h3>
           <ul class="limitation-list">
             <li>
+              El oro no es una medida perfecta del coste de vida. Es una unidad
+              alternativa, física y fácil de visualizar.
+            </li>
+            <li>
+              El IPC es una cesta media; no describe el coste de vida personal
+              de cada hogar.
+            </li>
+            <li>
+              PIB per cápita, renta media, salario bruto y salario neto no son
+              lo mismo. No mezcles métricas distintas en una misma conclusión.
+            </li>
+            <li>
               Se usan medias anuales del precio del oro y del tipo de cambio; no
               son precios intradía en tiempo real.
             </li>
             <li>
-              No se incluyen comisiones, impuestos, spreads, costes de custodia
-              ni primas de coleccionismo.
-            </li>
-            <li>
               Esto no es asesoramiento financiero. Es una herramienta educativa
-              y de interés público.
-            </li>
-            <li>
-              Las estimaciones se basan en datos históricos anuales y pueden no
-              reflejar el valor exacto en un momento concreto.
+              para detectar comparaciones monetarias incompletas.
             </li>
           </ul>
         </article>
       </section>
     </main>
 
+    <script
+      type="application/json"
+      id="calculation-data"
+      is:inline
+      set:html={calculationRowsJson}
+    />
+
     <script type="module" is:inline>
-      const form = document.querySelector('.calculator');
-      const salaryInput = document.querySelector('#salary');
-      const resultText = document.querySelector('#result-text');
-      const resultValuePrimary = document.querySelector(
-        '#result-value-primary',
+      const dataElement = document.querySelector('#calculation-data');
+      const form = document.querySelector('.historical-calculator');
+      const pastYearInput = document.querySelector('#past-year');
+      const pastAmountInput = document.querySelector('#past-amount');
+      const currentAmountInput = document.querySelector('#current-amount');
+      const pastAmountUnit = document.querySelector('#past-amount-unit');
+      const resultContext = document.querySelector('#result-context');
+      const resultVerdict = document.querySelector('#result-verdict');
+      const pastGoldCoinsOutput = document.querySelector('#past-gold-coins');
+      const inflationAdjustedEurOutput = document.querySelector(
+        '#inflation-adjusted-eur',
       );
-      const resultValueSecondary = document.querySelector(
-        '#result-value-secondary',
+      const adjustedCurrentGoldCoinsOutput = document.querySelector(
+        '#adjusted-current-gold-coins',
       );
+      const currentGoldCoinsOutput = document.querySelector(
+        '#current-gold-coins',
+      );
+      const pastGoldDetail = document.querySelector('#past-gold-detail');
+      const inflationDetail = document.querySelector('#inflation-detail');
+      const adjustedGoldDetail = document.querySelector(
+        '#adjusted-gold-detail',
+      );
+      const currentGoldDetail = document.querySelector('#current-gold-detail');
 
       if (
+        dataElement instanceof HTMLScriptElement &&
         form instanceof HTMLFormElement &&
-        salaryInput instanceof HTMLInputElement &&
-        resultText &&
-        resultValuePrimary &&
-        resultValueSecondary
+        pastYearInput instanceof HTMLSelectElement &&
+        pastAmountInput instanceof HTMLInputElement &&
+        currentAmountInput instanceof HTMLInputElement &&
+        pastAmountUnit &&
+        resultContext &&
+        resultVerdict &&
+        pastGoldCoinsOutput &&
+        inflationAdjustedEurOutput &&
+        adjustedCurrentGoldCoinsOutput &&
+        currentGoldCoinsOutput &&
+        pastGoldDetail &&
+        inflationDetail &&
+        adjustedGoldDetail &&
+        currentGoldDetail
       ) {
-        const goldEurPerGram = Number(form.dataset.goldEurPerGram);
+        const calculationRows = JSON.parse(dataElement.textContent || '[]');
+        const rowsByYear = new Map(
+          calculationRows.map((row) => [String(row.year), row]),
+        );
+        const currentRow = calculationRows[calculationRows.length - 1];
+        const eurToEsp = Number(form.dataset.eurToEsp);
         const goldCoinFineGoldGrams = Number(
           form.dataset.goldCoinFineGoldGrams,
         );
-        const numberFormatter = new Intl.NumberFormat('es-ES', {
-          maximumFractionDigits: 2,
+        const eurFormatter = new Intl.NumberFormat('es-ES', {
+          currency: 'EUR',
+          maximumFractionDigits: 0,
+          style: 'currency',
+        });
+        const espFormatter = new Intl.NumberFormat('es-ES', {
+          maximumFractionDigits: 0,
         });
         const coinFormatter = new Intl.NumberFormat('es-ES', {
           maximumFractionDigits: 2,
           minimumFractionDigits: 2,
         });
+        const percentFormatter = new Intl.NumberFormat('es-ES', {
+          maximumFractionDigits: 1,
+          style: 'percent',
+        });
 
-        const getPagas = () =>
-          Number(
-            form.querySelector('input[name="pagas"]:checked')?.value ?? '12',
+        const getPastCurrency = () =>
+          form.querySelector('input[name="pastCurrency"]:checked')?.value ??
+          'ESP';
+
+        const formatPastAmount = (amount, currency) =>
+          currency === 'ESP'
+            ? `${espFormatter.format(amount)} pesetas`
+            : eurFormatter.format(amount);
+
+        const formatCoinDifference = (currentCoins, referenceCoins) => {
+          if (!Number.isFinite(referenceCoins) || referenceCoins === 0) {
+            return 'sin una referencia comparable';
+          }
+
+          const difference = (currentCoins - referenceCoins) / referenceCoins;
+
+          if (Math.abs(difference) < 0.005) {
+            return 'prácticamente lo mismo';
+          }
+
+          const formattedDifference = percentFormatter.format(
+            Math.abs(difference),
           );
+          return difference < 0
+            ? `${formattedDifference} menos`
+            : `${formattedDifference} más`;
+        };
 
         const clearResult = () => {
-          resultText.textContent = '';
-          resultValuePrimary.textContent = '';
-          resultValueSecondary.textContent = '';
+          resultContext.textContent =
+            'Introduce importes válidos para comparar.';
+          resultVerdict.textContent = '';
+          pastGoldCoinsOutput.textContent = '';
+          inflationAdjustedEurOutput.textContent = '';
+          adjustedCurrentGoldCoinsOutput.textContent = '';
+          currentGoldCoinsOutput.textContent = '';
+          pastGoldDetail.textContent = '';
+          inflationDetail.textContent = '';
+          adjustedGoldDetail.textContent = '';
+          currentGoldDetail.textContent = '';
         };
 
         const updateResult = () => {
-          const pagas = getPagas();
+          const pastCurrency = getPastCurrency();
+          pastAmountUnit.textContent =
+            pastCurrency === 'ESP' ? 'pesetas/año' : '€/año';
 
-          if (salaryInput.value === '') {
+          if (pastAmountInput.value === '' || currentAmountInput.value === '') {
             clearResult();
             return;
           }
 
-          const salary = salaryInput.valueAsNumber;
+          const pastRow = rowsByYear.get(pastYearInput.value);
+          const pastAmount = pastAmountInput.valueAsNumber;
+          const currentAmount = currentAmountInput.valueAsNumber;
 
-          if (Number.isNaN(salary) || salary < 0) {
+          if (
+            !pastRow ||
+            !currentRow ||
+            Number.isNaN(pastAmount) ||
+            Number.isNaN(currentAmount) ||
+            pastAmount < 0 ||
+            currentAmount < 0
+          ) {
             clearResult();
             return;
           }
 
-          const monthlyCoins = salary / goldEurPerGram / goldCoinFineGoldGrams;
-          const annualCoins = monthlyCoins * pagas;
-          resultText.textContent = `${numberFormatter.format(
-            salary,
-          )} €/mes equivalen a`;
-          resultValuePrimary.textContent = `${coinFormatter.format(
-            monthlyCoins,
-          )} monedas de oro al mes`;
-          resultValueSecondary.textContent = `${coinFormatter.format(
-            annualCoins,
-          )} monedas de oro al año`;
+          const pastSalaryEur =
+            pastCurrency === 'ESP' ? pastAmount / eurToEsp : pastAmount;
+          const pastGoldCoins =
+            pastSalaryEur / pastRow.goldEurPerGram / goldCoinFineGoldGrams;
+          const inflationAdjustedSalaryEur =
+            (pastSalaryEur * currentRow.cpiIndex) / pastRow.cpiIndex;
+          const adjustedCurrentGoldCoins =
+            inflationAdjustedSalaryEur /
+            currentRow.goldEurPerGram /
+            goldCoinFineGoldGrams;
+          const currentGoldCoins =
+            currentAmount / currentRow.goldEurPerGram / goldCoinFineGoldGrams;
+
+          resultContext.textContent = `Comparando ${formatPastAmount(
+            pastAmount,
+            pastCurrency,
+          )} de ${pastRow.year} con ${eurFormatter.format(
+            currentAmount,
+          )} en ${currentRow.year}.`;
+          pastGoldCoinsOutput.textContent = `${coinFormatter.format(
+            pastGoldCoins,
+          )} monedas`;
+          inflationAdjustedEurOutput.textContent = eurFormatter.format(
+            inflationAdjustedSalaryEur,
+          );
+          adjustedCurrentGoldCoinsOutput.textContent = `${coinFormatter.format(
+            adjustedCurrentGoldCoins,
+          )} monedas`;
+          currentGoldCoinsOutput.textContent = `${coinFormatter.format(
+            currentGoldCoins,
+          )} monedas`;
+          pastGoldDetail.textContent = `En ${pastRow.year}, esta renta compraba esa cantidad de monedas de oro.`;
+          inflationDetail.textContent = `Ajustada por inflación, equivale a esta cantidad en euros de ${currentRow.year}.`;
+          adjustedGoldDetail.textContent = `Ese equivalente compraría hoy esta cantidad de monedas de oro.`;
+          currentGoldDetail.textContent = `Tu renta actual compra esta cantidad de monedas de oro hoy.`;
+          resultVerdict.textContent = `Medida directamente en oro, la renta actual compra ${formatCoinDifference(
+            currentGoldCoins,
+            pastGoldCoins,
+          )} que la renta pasada compraba en ${pastRow.year}. Frente al equivalente ajustado por inflación, compra ${formatCoinDifference(
+            currentGoldCoins,
+            adjustedCurrentGoldCoins,
+          )}.`;
         };
 
         form.addEventListener('submit', (event) => event.preventDefault());
-        salaryInput.addEventListener('input', updateResult);
-        form.querySelectorAll('input[name="pagas"]').forEach((radio) => {
-          radio.addEventListener('change', updateResult);
-        });
+        form.addEventListener('input', updateResult);
+        form.addEventListener('change', updateResult);
+        updateResult();
       }
     </script>
   </body>

@@ -2,7 +2,7 @@
 
 Salario en Oro is a lightweight static Astro site for understanding salaries in Spain through inflation-adjusted purchasing power and a historical gold coin abstraction.
 
-The current MVP calculates a monthly salary in euros as an equivalent number of gold coins, using the latest annual gold price available in the static calculation dataset. The broader product roadmap includes historical CPI salary comparisons from 1975 onward.
+The current MVP compares an annual income or salary from the past with a current annual income or salary, using Spanish CPI and annual gold prices to express both figures as inflation-adjusted euros and gold coins.
 
 The project standard is:
 
@@ -24,12 +24,11 @@ This unit is inspired by historical European gold coins such as Spanish 20 peset
 
 ## Current State
 
-- The homepage calculates a net monthly salary in euros into gold coins per month and per year.
-- The current UI uses the latest complete annual `goldEurPerGram` value from `public/data/calculation-data.json`.
-- Core calculation helpers for CPI adjustment, gold grams, gold coins, and EUR/ESP conversion live in `src/lib/calculate.ts`.
+- The homepage compares a past annual amount and a current annual amount through CPI-adjusted euros and gold coins.
+- The current UI uses historical rows and the latest complete annual row from `public/data/calculation-data.json`.
+- Core calculation helpers for CPI adjustment, gold grams, gold coins, EUR/ESP conversion, and historical salary/gold comparison live in `src/lib/calculate.ts`.
 - Static datasets are generated and validated under `public/data/`.
-- The homepage includes an embedded trust section with methodology, formulas, data facts, source links (World Bank, ECB), a link to the GitHub source code, a privacy note, and a limitations/disclaimer block.
-- The full historical comparison UI described in `ROADMAP.md` is not implemented yet.
+- The homepage includes an embedded trust section with methodology, formulas, data facts, source links (INE, World Bank, ECB, Banco de España), a link to the GitHub source code, a privacy note, and a limitations/disclaimer block.
 
 ## Local Setup
 
