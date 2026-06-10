@@ -49,13 +49,13 @@ typography:
   h2:
     fontFamily: 'Fraunces, Georgia, serif'
     fontSize: '28px'
-    fontWeight: '650'
+    fontWeight: '700'
     lineHeight: '1.18'
     letterSpacing: '-0.02em'
   h3:
     fontFamily: 'Fraunces, Georgia, serif'
     fontSize: '20px'
-    fontWeight: '650'
+    fontWeight: '700'
     lineHeight: '1.25'
   body:
     fontFamily: 'Inter, system-ui, sans-serif'
@@ -81,19 +81,19 @@ typography:
   number-lg:
     fontFamily: 'IBM Plex Mono, ui-monospace, monospace'
     fontSize: '32px'
-    fontWeight: '650'
+    fontWeight: '700'
     lineHeight: '1.1'
     fontFeature: 'tnum'
   number-md:
     fontFamily: 'IBM Plex Mono, ui-monospace, monospace'
     fontSize: '24px'
-    fontWeight: '650'
+    fontWeight: '700'
     lineHeight: '1.15'
     fontFeature: 'tnum'
   number-sm:
     fontFamily: 'IBM Plex Mono, ui-monospace, monospace'
     fontSize: '16px'
-    fontWeight: '500'
+    fontWeight: '400'
     lineHeight: '1.3'
     fontFeature: 'tnum'
 rounded:
@@ -287,6 +287,41 @@ Design principles:
 - Pair every number with context: year, unit, source, caveat, or comparison.
 - Use gold as information, not luxury.
 - Keep interaction calm; avoid urgency, gamification, and trading-dashboard patterns.
+- Prefer global UI consistency over local component optimizations.
+- Reuse the smallest possible set of component variants, text styles, and alignment patterns.
+
+## UI Consistency Contract
+
+These rules are stricter than the token list and should guide implementation when a local page could be solved multiple ways.
+
+Approved component variants:
+
+| Component                 | Approved variants                                            | Rule                                                                       |
+| ------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| Button/link action        | Primary, text link                                           | Do not add secondary visual button styles unless there is a repeated need. |
+| Card                      | Standard, gold result, summary verdict, info/source, warning | Do not invent one-off tinted cards for local emphasis.                     |
+| Form field                | Label + native control, label + input with suffix/select     | Keep labels above controls and use one shared input treatment.             |
+| Toggle/choice             | Compact explanatory toggle                                   | It must read as supporting configuration, not as a primary result.         |
+| Source/methodology access | Inline text links                                            | Keep them close to the result they explain.                                |
+
+Text style budget:
+
+| Role                      | Family        | Weight                             | Color                                     |
+| ------------------------- | ------------- | ---------------------------------- | ----------------------------------------- |
+| Headings                  | Display serif | `700`                              | `text-strong`                             |
+| Body and help text        | Body sans     | `400`                              | `text` or `text-muted`                    |
+| Labels, buttons, metadata | Body sans     | `700`                              | `text-strong`, `text-muted`, or `primary` |
+| Numbers                   | Numeric mono  | `400` or inherited strong emphasis | `text-strong`                             |
+
+Alignment rules:
+
+| Area                  | Rule                                                                                                                                             |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Calculator inputs     | Use a two-column grid on desktop and one column on mobile. Do not let one column's helper content push equivalent result cards out of alignment. |
+| Gold comparison cards | Render past and current gold values in the same row and with the same card variant. Place `vs` only between these cards.                         |
+| Verdict               | The summary verdict spans the calculator width and appears immediately after the compared cards.                                                 |
+| Mobile                | Preserve DOM order, stack sections, remove fixed card heights, and keep the result close to the inputs.                                          |
+| Trust links           | Put compact methodology/source/limit links directly under the verdict, then provide the full details later on the page.                          |
 
 Tone words:
 

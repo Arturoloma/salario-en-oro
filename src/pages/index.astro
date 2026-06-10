@@ -142,8 +142,8 @@ const calculationRowsJson = JSON.stringify(calculationRows);
           data-current-salary-default={DEFAULT_CURRENT_SALARY_EUR}
           data-past-mode-default="literal"
         >
-          <div class="comparison-grid">
-            <div class="comparison-column comparison-column--past">
+          <div class="calculator-inputs">
+            <div class="input-panel input-panel--past">
               <p class="column-label">Renta de referencia</p>
 
               <div class="field-group">
@@ -205,35 +205,9 @@ const calculationRowsJson = JSON.stringify(calculationRows);
                   </span>
                 </label>
               </div>
-
-              <article
-                class="result-card result-card--gold-past"
-                aria-live="polite"
-                aria-atomic="false"
-              >
-                <span class="result-label">Valor en oro entonces</span>
-                <strong>
-                  <output id="past-gold-coins">
-                    {coinFormatter.format(initialComparison.pastGoldCoins)} monedas
-                  </output>
-                </strong>
-                <p id="past-gold-detail">
-                  En {DEFAULT_PAST_YEAR}, esta renta compraba esa cantidad de
-                  monedas de oro.
-                </p>
-                <p class="result-sub" id="past-eur-equivalent">
-                  ≈ {
-                    eurFormatter.format(
-                      initialComparison.inflationAdjustedSalaryEur,
-                    )
-                  } EUR de hoy
-                </p>
-              </article>
             </div>
 
-            <div class="comparison-vs" aria-hidden="true">vs</div>
-
-            <div class="comparison-column comparison-column--current">
+            <div class="input-panel input-panel--current">
               <p class="column-label">Renta a evaluar</p>
 
               <div class="field-group">
@@ -251,42 +225,67 @@ const calculationRowsJson = JSON.stringify(calculationRows);
                   <span aria-hidden="true">€/año</span>
                 </div>
               </div>
-
-              <article
-                class="result-card result-card--gold-current"
-                aria-live="polite"
-                aria-atomic="false"
-              >
-                <span class="result-label">Tu renta actual en oro</span>
-                <strong>
-                  <output id="current-gold-coins">
-                    {coinFormatter.format(initialComparison.currentGoldCoins)} monedas
-                  </output>
-                </strong>
-                <p id="current-gold-detail">
-                  Tu renta actual compra esta cantidad de monedas de oro hoy.
-                </p>
-              </article>
             </div>
           </div>
 
-          <output
-            class="results-panel results-panel--verdict"
-            id="result"
-            aria-live="polite"
-            aria-atomic="true"
-          >
+          <div class="comparison-results">
+            <article class="result-card result-card--gold">
+              <span class="result-label">Valor en oro entonces</span>
+              <strong>
+                <output id="past-gold-coins">
+                  {coinFormatter.format(initialComparison.pastGoldCoins)} monedas
+                </output>
+              </strong>
+              <p id="past-gold-detail">
+                En {DEFAULT_PAST_YEAR}, esta renta compraba esa cantidad de
+                monedas de oro.
+              </p>
+              <p class="result-sub" id="past-eur-equivalent">
+                ≈ {
+                  eurFormatter.format(
+                    initialComparison.inflationAdjustedSalaryEur,
+                  )
+                } EUR de hoy
+              </p>
+            </article>
+
+            <div class="comparison-vs" aria-hidden="true">vs</div>
+
+            <article class="result-card result-card--gold">
+              <span class="result-label">Tu renta actual en oro</span>
+              <strong>
+                <output id="current-gold-coins">
+                  {coinFormatter.format(initialComparison.currentGoldCoins)} monedas
+                </output>
+              </strong>
+              <p id="current-gold-detail">
+                Tu renta actual compra esta cantidad de monedas de oro hoy.
+              </p>
+            </article>
+          </div>
+
+          <article class="results-panel results-panel--verdict" id="result">
             <p class="result-eyebrow">Resultado en oro</p>
-            <p class="result-verdict" id="result-verdict">
+            <p
+              class="result-verdict"
+              id="result-verdict"
+              aria-live="polite"
+              aria-atomic="true"
+            >
               Medida en monedas de oro, la renta actual compra {
                 initialDirectGoldDifference
               } que la renta pasada compraba en {DEFAULT_PAST_YEAR}.
             </p>
             <p class="result-percent" id="result-percent" hidden></p>
+            <nav class="result-links" aria-label="Transparencia del resultado">
+              <a href="#formulas">Cómo se calcula</a>
+              <a href="#fuentes">Fuentes</a>
+              <a href="#limitaciones">Limitaciones</a>
+            </nav>
             <button type="button" class="reset-link" id="reset-example" hidden>
               Restablecer ejemplo
             </button>
-          </output>
+          </article>
         </form>
       </section>
 
@@ -344,7 +343,7 @@ const calculationRowsJson = JSON.stringify(calculationRows);
         <h2 id="transparencia-titulo">Metodología y límites</h2>
 
         <div class="trust-grid">
-          <article class="trust-card trust-card--methodology">
+          <article class="trust-card trust-card--methodology" id="formulas">
             <h3>Fórmulas</h3>
             <pre><code>renta_pasada_eur = pesetas / 166,386
 equivalente_actual = renta_pasada_eur × IPC_actual / IPC_año_pasado
@@ -358,7 +357,7 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
             </p>
           </article>
 
-          <article class="trust-card trust-card--data">
+          <article class="trust-card trust-card--data" id="datos">
             <h3>Datos utilizados</h3>
             <dl class="data-facts">
               <dt>Años disponibles</dt>
@@ -375,7 +374,7 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
             </dl>
           </article>
 
-          <article class="trust-card trust-card--sources">
+          <article class="trust-card trust-card--sources" id="fuentes">
             <h3>Fuentes</h3>
             <p>Datos usados en el cálculo de esta página:</p>
             <ul class="source-list">
@@ -437,7 +436,7 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
             </p>
           </article>
 
-          <article class="trust-card trust-card--privacy">
+          <article class="trust-card trust-card--privacy" id="privacidad">
             <h3>Privacidad</h3>
             <p>
               Las cantidades que introduces no se envían a ningún servidor. Todo
@@ -450,7 +449,7 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
           </article>
         </div>
 
-        <article class="trust-card trust-card--disclaimer">
+        <article class="trust-card trust-card--disclaimer" id="limitaciones">
           <h3>Limitaciones y aviso</h3>
           <ul class="limitation-list">
             <li>

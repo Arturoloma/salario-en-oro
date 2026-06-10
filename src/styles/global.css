@@ -42,16 +42,16 @@
   }
 
   h1 {
-    max-inline-size: 13ch;
-    font-size: clamp(3rem, 8vw, 6rem);
-    line-height: 0.92;
-    letter-spacing: -0.045em;
+    max-inline-size: 14ch;
+    font-size: clamp(2.75rem, 6.5vw, 5.15rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
   }
 
   h2 {
     max-inline-size: 18ch;
-    font-size: clamp(2rem, 4.5vw, 3.5rem);
-    line-height: 1;
+    font-size: clamp(1.9rem, 4vw, 3.25rem);
+    line-height: 1.04;
     letter-spacing: -0.035em;
   }
 
@@ -93,13 +93,13 @@
       calc(100% - var(--page-padding) * 2)
     );
     margin-inline: auto;
-    padding-block: var(--space-6) var(--section-gap);
+    padding-block: var(--space-5) var(--section-gap);
   }
 
   .eyebrow {
     color: var(--color-primary);
     font-size: var(--text-label);
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
   }
@@ -109,7 +109,7 @@
     grid-template-columns: minmax(0, 1.25fr) minmax(17rem, 0.75fr);
     gap: clamp(var(--space-5), 7vw, var(--space-8));
     align-items: end;
-    min-block-size: min(42rem, 82dvb);
+    min-block-size: clamp(30rem, 62dvb, 38rem);
   }
 
   .hero-copy {
@@ -120,7 +120,7 @@
   .hero-lead {
     max-inline-size: 48rem;
     color: var(--color-text);
-    font-size: clamp(1.15rem, 1rem + 0.8vw, 1.55rem);
+    font-size: clamp(1.1rem, 1rem + 0.6vw, 1.38rem);
   }
 
   .button-link {
@@ -132,7 +132,7 @@
     border-radius: 999px;
     background: var(--color-primary);
     color: var(--color-on-primary);
-    font-weight: 800;
+    font-weight: 700;
     text-decoration: none;
     box-shadow: var(--shadow-md);
   }
@@ -140,51 +140,6 @@
   .button-link:hover {
     background: var(--color-primary-hover);
     color: var(--color-on-primary);
-  }
-
-  .hero-note {
-    position: relative;
-    display: grid;
-    gap: var(--space-2);
-    padding: clamp(var(--space-4), 4vw, var(--space-6));
-    border: 1px solid color-mix(in oklab, var(--color-accent-gold), white 42%);
-    border-radius: var(--radius-xl);
-    background:
-      linear-gradient(135deg, rgb(255 255 255 / 0.82), rgb(251 244 221 / 0.92)),
-      var(--color-accent-gold-muted);
-    box-shadow: var(--shadow-card);
-    isolation: isolate;
-  }
-
-  .hero-note::before {
-    content: '';
-    position: absolute;
-    inset-block-start: var(--space-4);
-    inset-inline-end: var(--space-4);
-    inline-size: 4.75rem;
-    aspect-ratio: 1;
-    border: 0.7rem double
-      color-mix(in oklab, var(--color-accent-gold), #6b4b12 30%);
-    border-radius: 50%;
-    opacity: 0.65;
-    z-index: -1;
-  }
-
-  .hero-note span {
-    color: var(--color-text-muted);
-    font-size: var(--text-body);
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  .hero-note strong {
-    max-inline-size: 11ch;
-    color: var(--color-text-strong);
-    font-family: var(--font-display);
-    font-size: clamp(2rem, 5vw, 4.25rem);
-    letter-spacing: -0.04em;
-    line-height: 0.95;
   }
 
   .copy-section,
@@ -204,36 +159,10 @@
     box-shadow: var(--shadow-card);
   }
 
-  .copy-section--unit {
-    background:
-      linear-gradient(120deg, rgb(255 255 255 / 0.9), rgb(232 242 247 / 0.86)),
-      var(--color-result-summary);
-  }
-
-  .copy-section--gold {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    align-items: end;
-    background:
-      repeating-linear-gradient(
-        -45deg,
-        rgb(201 164 74 / 0.12) 0 0.75rem,
-        transparent 0 1.5rem
-      ),
-      var(--color-accent-gold-muted);
-  }
-
   .copy-section--claim {
     background:
       linear-gradient(135deg, rgb(251 234 234 / 0.86), rgb(255 247 224 / 0.92)),
       var(--color-warning-muted);
-  }
-
-  .statement-line {
-    color: var(--color-text-strong);
-    font-family: var(--font-display);
-    font-size: clamp(1.6rem, 4vw, 3rem);
-    letter-spacing: -0.03em;
-    line-height: 1;
   }
 
   .section-heading {
@@ -244,23 +173,24 @@
 
   .calculator {
     display: grid;
-    gap: var(--space-5);
-    padding: clamp(var(--space-4), 4vw, var(--space-6));
+    gap: var(--space-4);
+    padding: clamp(var(--space-4), 3vw, var(--space-5));
     border: 1px solid color-mix(in oklab, var(--color-primary), white 70%);
     border-radius: var(--radius-xl);
     background: rgb(255 255 255 / 0.88);
     box-shadow: var(--shadow-card);
   }
 
-  .comparison-grid {
+  .calculator-inputs {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-4);
+    gap: var(--space-5);
+    align-items: start;
   }
 
-  .comparison-column {
+  .input-panel {
     display: grid;
-    gap: var(--space-4);
+    gap: var(--space-3);
     align-content: start;
   }
 
@@ -274,7 +204,7 @@
     padding: 0;
     color: var(--color-text-strong);
     font-size: var(--text-body);
-    font-weight: 800;
+    font-weight: 700;
   }
 
   .control,
@@ -366,12 +296,11 @@
   .result-eyebrow {
     color: var(--color-primary);
     font-size: var(--text-label);
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
   }
 
-  .result-context,
   .result-verdict {
     max-inline-size: none;
     padding: 0;
@@ -392,8 +321,20 @@
   .result-percent {
     color: var(--color-text);
     font-size: var(--text-body);
-    font-weight: 600;
+    font-weight: 700;
     line-height: 1.45;
+  }
+
+  .result-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-3);
+  }
+
+  .result-links a {
+    color: var(--color-primary);
+    font-size: var(--text-small);
+    font-weight: 700;
   }
 
   .result-sub {
@@ -424,22 +365,15 @@
   .column-label {
     color: var(--color-text-muted);
     font-size: var(--text-label);
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
   }
 
-  .helper-text {
-    max-inline-size: 44rem;
-    color: var(--color-text);
-    font-size: var(--text-body);
-    line-height: 1.6;
-  }
-
-  .comparison-grid {
+  .comparison-results {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    gap: var(--space-4);
+    gap: var(--space-3);
     align-items: stretch;
   }
 
@@ -463,13 +397,14 @@
   .toggle {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: var(--space-3);
+    gap: var(--space-2);
     align-items: start;
-    padding: var(--space-3);
-    border: 1px dashed var(--color-border-strong);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border-subtle);
     border-radius: var(--radius-md);
-    background: var(--color-surface-muted);
+    background: color-mix(in oklab, var(--color-surface-muted), white 32%);
     color: var(--color-text);
+    font-weight: 400;
     cursor: pointer;
   }
 
@@ -537,6 +472,7 @@
   .toggle-hint {
     color: var(--color-text-muted);
     font-size: var(--text-small);
+    font-weight: 400;
     line-height: 1.45;
   }
 
@@ -544,31 +480,22 @@
     display: grid;
     align-content: start;
     gap: var(--space-2);
-    min-block-size: 13rem;
-    padding: var(--card-padding);
+    min-block-size: 0;
+    padding: clamp(var(--space-3), 3vw, var(--space-4));
     border: var(--card-border);
     border-radius: var(--radius-lg);
     background: var(--color-surface);
   }
 
-  .result-card--gold-past,
-  .result-card--gold-adjusted {
+  .result-card--gold {
     border-color: color-mix(in oklab, var(--color-accent-gold), white 42%);
-    background: var(--color-accent-gold-muted);
-  }
-
-  .result-card--inflation {
-    background: var(--color-info-muted);
-  }
-
-  .result-card--gold-current {
-    background: var(--color-positive-muted);
+    background: color-mix(in oklab, var(--color-accent-gold-muted), white 34%);
   }
 
   .result-label {
     color: var(--color-text-muted);
     font-size: var(--text-small);
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
@@ -576,7 +503,7 @@
   .result-card strong {
     color: var(--color-text-strong);
     font-family: var(--font-numeric);
-    font-size: clamp(1.35rem, 2.7vw, 2rem);
+    font-size: clamp(1.45rem, 2.3vw, 1.9rem);
     font-variant-numeric: tabular-nums;
     line-height: 1.05;
   }
@@ -625,6 +552,7 @@
   .trust-card {
     display: grid;
     gap: var(--space-2);
+    scroll-margin-block-start: var(--space-4);
     padding: var(--card-padding);
     border: var(--card-border);
     border-radius: var(--radius-lg);
@@ -677,7 +605,7 @@
   .data-facts dt {
     color: var(--color-text-muted);
     font-size: var(--text-small);
-    font-weight: 800;
+    font-weight: 700;
   }
 
   .data-facts dd {
@@ -735,12 +663,12 @@
 
   @media (max-width: 62rem) {
     .hero-section,
-    .copy-section--gold,
+    .calculator-inputs,
     .trust-grid {
       grid-template-columns: 1fr;
     }
 
-    .comparison-grid {
+    .comparison-results {
       grid-template-columns: 1fr;
     }
 
@@ -779,14 +707,22 @@
       border-radius: var(--radius-lg);
     }
 
-    .input-wrap {
-      align-items: stretch;
-      flex-direction: column;
+    .calculator {
+      gap: var(--space-3);
+    }
+
+    .input-wrap input {
+      font-size: 1rem;
     }
 
     .input-wrap span,
     .input-wrap select {
-      padding-block: 0 var(--space-2);
+      padding-inline: var(--space-2);
+    }
+
+    .result-card,
+    .results-panel--verdict {
+      border-radius: var(--radius-lg);
     }
 
     .interpretation-grid {
