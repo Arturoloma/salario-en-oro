@@ -252,27 +252,25 @@
     box-shadow: var(--shadow-card);
   }
 
-  .form-grid {
+  .comparison-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-4);
   }
 
-  .field-group,
-  .radio-group {
+  .comparison-column {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+  }
+
+  .field-group {
     display: grid;
     gap: var(--space-2);
     min-inline-size: 0;
   }
 
-  .radio-group {
-    margin: 0;
-    padding: 0;
-    border: 0;
-  }
-
-  .field-group label,
-  .radio-group legend {
+  .field-group label {
     padding: 0;
     color: var(--color-text-strong);
     font-size: var(--text-body);
@@ -318,55 +316,31 @@
     outline-offset: calc(-1 * var(--focus-outline-offset));
   }
 
-  .input-wrap span {
+  .input-wrap span,
+  .input-wrap select {
     padding-inline: var(--space-3);
     color: var(--color-text-muted);
     font-size: var(--text-body);
     white-space: nowrap;
   }
 
-  .radio-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-
-  .radio-label {
-    display: inline-flex;
-    align-items: center;
+  .input-wrap select {
     min-block-size: var(--control-min-block-size);
-    gap: var(--space-2);
-    padding: 0.5rem var(--space-3);
-    border: var(--control-border);
-    border-radius: 999px;
-    background: var(--color-surface-input);
+    padding-inline: var(--space-2) 1.75rem;
+    border: 0;
+    border-inline-start: var(--control-border);
+    background: transparent;
     color: var(--color-text);
+    font: inherit;
     cursor: pointer;
-    font-size: var(--text-body);
-    transition:
-      background-color 0.15s,
-      border-color 0.15s,
-      color 0.15s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
   }
 
-  .radio-label:hover:not(:has(input:disabled)) {
-    border-color: var(--color-primary);
-    background: var(--color-surface-muted);
-  }
-
-  .radio-label:has(input:checked) {
-    border-color: var(--color-primary);
-    background: var(--color-primary);
-    color: var(--color-on-primary);
-  }
-
-  .radio-label input[type='radio'] {
-    margin: 0;
-    accent-color: var(--color-primary);
-  }
-
-  .radio-label:has(input:checked) input[type='radio'] {
-    accent-color: var(--color-on-primary);
+  .input-wrap select:focus-visible {
+    outline-offset: calc(-1 * var(--focus-outline-offset));
   }
 
   .field-hint {
@@ -394,12 +368,6 @@
     border-inline-start: 0.35rem solid var(--color-accent-terracotta);
     background: var(--color-warning-muted);
     font-weight: 700;
-  }
-
-  .result-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--space-3);
   }
 
   .result-card {
@@ -598,7 +566,7 @@
   @media (max-width: 62rem) {
     .hero-section,
     .copy-section--gold,
-    .form-grid,
+    .comparison-grid,
     .trust-grid {
       grid-template-columns: 1fr;
     }
@@ -608,7 +576,6 @@
       padding-block-start: var(--space-5);
     }
 
-    .result-grid,
     .interpretation-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -640,11 +607,11 @@
       flex-direction: column;
     }
 
-    .input-wrap span {
+    .input-wrap span,
+    .input-wrap select {
       padding-block: 0 var(--space-2);
     }
 
-    .result-grid,
     .interpretation-grid {
       grid-template-columns: 1fr;
     }

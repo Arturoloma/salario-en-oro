@@ -46,14 +46,6 @@ const initialComparison = calculateSalaryGoldComparison({
   currentGoldEurPerGram: latestRow.goldEurPerGram,
 });
 
-const eurFormatter = new Intl.NumberFormat('es-ES', {
-  currency: 'EUR',
-  maximumFractionDigits: 0,
-  style: 'currency',
-});
-const espFormatter = new Intl.NumberFormat('es-ES', {
-  maximumFractionDigits: 0,
-});
 const coinFormatter = new Intl.NumberFormat('es-ES', {
   maximumFractionDigits: 2,
   minimumFractionDigits: 2,
@@ -92,10 +84,6 @@ const initialDirectGoldDifference = formatCoinDifference(
   initialComparison.currentGoldCoins,
   initialComparison.pastGoldCoins,
 );
-const initialAdjustedGoldDifference = formatCoinDifference(
-  initialComparison.currentGoldCoins,
-  initialComparison.inflationAdjustedGoldCoinsAtCurrentPrice,
-);
 const calculationRowsJson = JSON.stringify(calculationRows);
 ---
 
@@ -116,51 +104,16 @@ const calculationRowsJson = JSON.stringify(calculationRows);
       <section class="hero-section" aria-labelledby="hero-title">
         <div class="hero-copy">
           <p class="eyebrow">Salario en Oro</p>
-          <h1 id="hero-title">Tu sueldo no vale lo que dice el número.</h1>
+          <h1 id="hero-title">
+            El crecimiento de la renta per cápita española no es lo que parece.
+          </h1>
           <p class="hero-lead">
-            El dinero cambia de valor con el tiempo. Esta calculadora compara
-            una renta del pasado y una actual en euros ajustados por inflación y
-            en monedas de oro.
+            En 1975, la renta media per cápita equivalía a unos 15000 euros de
+            hoy después de ajustar al IPC. Hoy, la renta media per cápita es de
+            31000 euros, así que podremos comprar el doble de cosas... ¿no?
           </p>
           <a class="button-link" href="#calculadora">Comparar valor real</a>
         </div>
-
-        <aside class="hero-note" aria-label="Idea central">
-          <span>El número sube.</span>
-          <strong>La pregunta es si el valor también.</strong>
-        </aside>
-      </section>
-
-      <section
-        class="copy-section copy-section--unit"
-        aria-labelledby="unidad-titulo"
-      >
-        <p class="eyebrow">La trampa está en la unidad</p>
-        <h2 id="unidad-titulo">No compares cifras. Compara valor real.</h2>
-        <p>
-          Comparar una cifra antigua con una cifra actual como si fueran la
-          misma unidad puede ser engañoso. Una peseta de 1975, un euro de 2002 y
-          un euro de hoy no representan el mismo valor real.
-        </p>
-        <p class="statement-line">
-          El número puede subir mientras el valor real baja.
-        </p>
-      </section>
-
-      <section
-        class="copy-section copy-section--gold"
-        aria-labelledby="oro-titulo"
-      >
-        <div>
-          <p class="eyebrow">Cambio de perspectiva</p>
-          <h2 id="oro-titulo">¿Y si te hubieran pagado en oro?</h2>
-        </div>
-        <p>
-          Si convertimos una renta antigua a oro en su propio año, vemos cuántos
-          gramos de oro compraba realmente entonces. Muchas veces, una cantidad
-          que parece pequeña en euros o pesetas compraba más oro que una renta
-          mucho mayor de hoy.
-        </p>
       </section>
 
       <section
@@ -169,12 +122,10 @@ const calculationRowsJson = JSON.stringify(calculationRows);
         aria-labelledby="calculadora-titulo"
       >
         <div class="section-heading">
-          <p class="eyebrow">Calculadora</p>
-          <h2 id="calculadora-titulo">Compara dos rentas</h2>
+          <h2 id="calculadora-titulo">¿Y si te hubieran pagado en oro?</h2>
           <p>
-            Introduce una renta anual del pasado y una renta anual actual. La
-            calculadora usa el último año completo disponible en los datos:
-            {latestRow.year}.
+            Veamos qué pasa cuando cambiamos la peseta o el euro por una moneda
+            con 5000 años de historia.
           </p>
         </div>
 
@@ -184,91 +135,52 @@ const calculationRowsJson = JSON.stringify(calculationRows);
           data-eur-to-esp={EUR_TO_ESP}
           data-gold-coin-fine-gold-grams={GOLD_COIN_FINE_GOLD_GRAMS}
         >
-          <div class="form-grid">
-            <div class="field-group">
-              <label for="past-year">Año de la renta pasada</label>
-              <select class="control" id="past-year" name="pastYear">
-                {
-                  calculationRows.map((row) => (
-                    <option
-                      value={row.year}
-                      selected={row.year === DEFAULT_PAST_YEAR}
-                    >
-                      {row.year}
-                    </option>
-                  ))
-                }
-              </select>
-            </div>
-
-            <div class="field-group">
-              <label for="past-amount">Renta pasada anual</label>
-              <div class="input-wrap">
-                <input
-                  id="past-amount"
-                  name="pastAmount"
-                  type="number"
-                  inputmode="decimal"
-                  min="0"
-                  step="0.01"
-                  value={DEFAULT_PAST_SALARY_ESP}
-                />
-                <span id="past-amount-unit" aria-hidden="true">pesetas/año</span
-                >
+          <div class="comparison-grid">
+            <div class="comparison-column comparison-column--past">
+              <div class="field-group">
+                <label for="past-year">Año de la renta pasada</label>
+                <select class="control" id="past-year" name="pastYear">
+                  {
+                    calculationRows.map((row) => (
+                      <option
+                        value={row.year}
+                        selected={row.year === DEFAULT_PAST_YEAR}
+                      >
+                        {row.year}
+                      </option>
+                    ))
+                  }
+                </select>
               </div>
-            </div>
 
-            <fieldset class="radio-group">
-              <legend>Moneda de la renta pasada</legend>
-              <div class="radio-options">
-                <label class="radio-label">
-                  <input type="radio" name="pastCurrency" value="ESP" checked />
-                  <span>Pesetas</span>
-                </label>
-                <label class="radio-label">
-                  <input type="radio" name="pastCurrency" value="EUR" />
-                  <span>Euros</span>
-                </label>
+              <div class="field-group">
+                <label for="past-amount">Renta pasada anual</label>
+                <div class="input-wrap">
+                  <input
+                    id="past-amount"
+                    name="pastAmount"
+                    type="number"
+                    inputmode="decimal"
+                    min="0"
+                    step="0.01"
+                    value={DEFAULT_PAST_SALARY_ESP}
+                  />
+                  <select
+                    id="past-amount-unit"
+                    name="pastCurrency"
+                    aria-label="Moneda de la renta pasada"
+                  >
+                    <option value="ESP" selected>Pesetas</option>
+                    <option value="EUR">Euros</option>
+                  </select>
+                </div>
               </div>
-              <p class="field-hint">
-                Si una cifra antigua ya está en euros constantes o ajustados por
-                inflación, no la vuelvas a ajustar por IPC.
-              </p>
-            </fieldset>
 
-            <div class="field-group">
-              <label for="current-amount">Renta actual anual</label>
-              <div class="input-wrap">
-                <input
-                  id="current-amount"
-                  name="currentAmount"
-                  type="number"
-                  inputmode="decimal"
-                  min="0"
-                  step="0.01"
-                  value={DEFAULT_CURRENT_SALARY_EUR}
-                />
-                <span aria-hidden="true">€/año</span>
-              </div>
-            </div>
-          </div>
-
-          <div
-            class="results-panel"
-            id="result"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            <p class="result-context" id="result-context">
-              Comparando {espFormatter.format(DEFAULT_PAST_SALARY_ESP)} pesetas de
-              {DEFAULT_PAST_YEAR} con {
-                eurFormatter.format(DEFAULT_CURRENT_SALARY_EUR)
-              }
-              en {latestRow.year}.
-            </p>
-
-            <div class="result-grid">
-              <article class="result-card result-card--gold-past">
+              <article
+                class="result-card result-card--gold-past"
+                aria-live="polite"
+                aria-atomic="true"
+              >
                 <span class="result-label">Valor en oro entonces</span>
                 <strong>
                   <output id="past-gold-coins">
@@ -280,41 +192,30 @@ const calculationRowsJson = JSON.stringify(calculationRows);
                   monedas de oro.
                 </p>
               </article>
+            </div>
 
-              <article class="result-card result-card--inflation">
-                <span class="result-label">Valor real en euros actuales</span>
-                <strong>
-                  <output id="inflation-adjusted-eur">
-                    {
-                      eurFormatter.format(
-                        initialComparison.inflationAdjustedSalaryEur,
-                      )
-                    }
-                  </output>
-                </strong>
-                <p id="inflation-detail">
-                  Ajustada por inflación, equivale a esta cantidad en euros
-                  actuales.
-                </p>
-              </article>
+            <div class="comparison-column comparison-column--current">
+              <div class="field-group">
+                <label for="current-amount">Renta actual anual</label>
+                <div class="input-wrap">
+                  <input
+                    id="current-amount"
+                    name="currentAmount"
+                    type="number"
+                    inputmode="decimal"
+                    min="0"
+                    step="0.01"
+                    value={DEFAULT_CURRENT_SALARY_EUR}
+                  />
+                  <span aria-hidden="true">€/año</span>
+                </div>
+              </div>
 
-              <article class="result-card result-card--gold-adjusted">
-                <span class="result-label">Ese valor real en oro actual</span>
-                <strong>
-                  <output id="adjusted-current-gold-coins">
-                    {
-                      coinFormatter.format(
-                        initialComparison.inflationAdjustedGoldCoinsAtCurrentPrice,
-                      )
-                    } monedas
-                  </output>
-                </strong>
-                <p id="adjusted-gold-detail">
-                  Ese equivalente compraría hoy esta cantidad de monedas de oro.
-                </p>
-              </article>
-
-              <article class="result-card result-card--gold-current">
+              <article
+                class="result-card result-card--gold-current"
+                aria-live="polite"
+                aria-atomic="true"
+              >
                 <span class="result-label">Tu renta actual en oro</span>
                 <strong>
                   <output id="current-gold-coins">
@@ -326,14 +227,18 @@ const calculationRowsJson = JSON.stringify(calculationRows);
                 </p>
               </article>
             </div>
+          </div>
 
+          <div
+            class="results-panel"
+            id="result"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             <p class="result-verdict" id="result-verdict">
-              Medida directamente en oro, la renta actual compra {
+              Medida en monedas de oro, la renta actual compra {
                 initialDirectGoldDifference
-              } que la renta pasada compraba en {DEFAULT_PAST_YEAR}. Frente al
-              equivalente ajustado por inflación, compra {
-                initialAdjustedGoldDifference
-              }.
+              } que la renta pasada compraba en {DEFAULT_PAST_YEAR}.
             </p>
           </div>
         </form>
@@ -541,23 +446,12 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
       const pastAmountInput = document.querySelector('#past-amount');
       const currentAmountInput = document.querySelector('#current-amount');
       const pastAmountUnit = document.querySelector('#past-amount-unit');
-      const resultContext = document.querySelector('#result-context');
       const resultVerdict = document.querySelector('#result-verdict');
       const pastGoldCoinsOutput = document.querySelector('#past-gold-coins');
-      const inflationAdjustedEurOutput = document.querySelector(
-        '#inflation-adjusted-eur',
-      );
-      const adjustedCurrentGoldCoinsOutput = document.querySelector(
-        '#adjusted-current-gold-coins',
-      );
       const currentGoldCoinsOutput = document.querySelector(
         '#current-gold-coins',
       );
       const pastGoldDetail = document.querySelector('#past-gold-detail');
-      const inflationDetail = document.querySelector('#inflation-detail');
-      const adjustedGoldDetail = document.querySelector(
-        '#adjusted-gold-detail',
-      );
       const currentGoldDetail = document.querySelector('#current-gold-detail');
 
       if (
@@ -566,16 +460,11 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
         pastYearInput instanceof HTMLSelectElement &&
         pastAmountInput instanceof HTMLInputElement &&
         currentAmountInput instanceof HTMLInputElement &&
-        pastAmountUnit &&
-        resultContext &&
+        pastAmountUnit instanceof HTMLSelectElement &&
         resultVerdict &&
         pastGoldCoinsOutput &&
-        inflationAdjustedEurOutput &&
-        adjustedCurrentGoldCoinsOutput &&
         currentGoldCoinsOutput &&
         pastGoldDetail &&
-        inflationDetail &&
-        adjustedGoldDetail &&
         currentGoldDetail
       ) {
         const calculationRows = JSON.parse(dataElement.textContent || '[]');
@@ -587,14 +476,6 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
         const goldCoinFineGoldGrams = Number(
           form.dataset.goldCoinFineGoldGrams,
         );
-        const eurFormatter = new Intl.NumberFormat('es-ES', {
-          currency: 'EUR',
-          maximumFractionDigits: 0,
-          style: 'currency',
-        });
-        const espFormatter = new Intl.NumberFormat('es-ES', {
-          maximumFractionDigits: 0,
-        });
         const coinFormatter = new Intl.NumberFormat('es-ES', {
           maximumFractionDigits: 2,
           minimumFractionDigits: 2,
@@ -604,14 +485,7 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
           style: 'percent',
         });
 
-        const getPastCurrency = () =>
-          form.querySelector('input[name="pastCurrency"]:checked')?.value ??
-          'ESP';
-
-        const formatPastAmount = (amount, currency) =>
-          currency === 'ESP'
-            ? `${espFormatter.format(amount)} pesetas`
-            : eurFormatter.format(amount);
+        const getPastCurrency = () => pastAmountUnit.value;
 
         const formatCoinDifference = (currentCoins, referenceCoins) => {
           if (!Number.isFinite(referenceCoins) || referenceCoins === 0) {
@@ -633,23 +507,15 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
         };
 
         const clearResult = () => {
-          resultContext.textContent =
-            'Introduce importes válidos para comparar.';
           resultVerdict.textContent = '';
           pastGoldCoinsOutput.textContent = '';
-          inflationAdjustedEurOutput.textContent = '';
-          adjustedCurrentGoldCoinsOutput.textContent = '';
           currentGoldCoinsOutput.textContent = '';
           pastGoldDetail.textContent = '';
-          inflationDetail.textContent = '';
-          adjustedGoldDetail.textContent = '';
           currentGoldDetail.textContent = '';
         };
 
         const updateResult = () => {
           const pastCurrency = getPastCurrency();
-          pastAmountUnit.textContent =
-            pastCurrency === 'ESP' ? 'pesetas/año' : '€/año';
 
           if (pastAmountInput.value === '' || currentAmountInput.value === '') {
             clearResult();
@@ -676,49 +542,37 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
             pastCurrency === 'ESP' ? pastAmount / eurToEsp : pastAmount;
           const pastGoldCoins =
             pastSalaryEur / pastRow.goldEurPerGram / goldCoinFineGoldGrams;
-          const inflationAdjustedSalaryEur =
-            (pastSalaryEur * currentRow.cpiIndex) / pastRow.cpiIndex;
-          const adjustedCurrentGoldCoins =
-            inflationAdjustedSalaryEur /
-            currentRow.goldEurPerGram /
-            goldCoinFineGoldGrams;
           const currentGoldCoins =
             currentAmount / currentRow.goldEurPerGram / goldCoinFineGoldGrams;
 
-          resultContext.textContent = `Comparando ${formatPastAmount(
-            pastAmount,
-            pastCurrency,
-          )} de ${pastRow.year} con ${eurFormatter.format(
-            currentAmount,
-          )} en ${currentRow.year}.`;
           pastGoldCoinsOutput.textContent = `${coinFormatter.format(
             pastGoldCoins,
-          )} monedas`;
-          inflationAdjustedEurOutput.textContent = eurFormatter.format(
-            inflationAdjustedSalaryEur,
-          );
-          adjustedCurrentGoldCoinsOutput.textContent = `${coinFormatter.format(
-            adjustedCurrentGoldCoins,
           )} monedas`;
           currentGoldCoinsOutput.textContent = `${coinFormatter.format(
             currentGoldCoins,
           )} monedas`;
           pastGoldDetail.textContent = `En ${pastRow.year}, esta renta compraba esa cantidad de monedas de oro.`;
-          inflationDetail.textContent = `Ajustada por inflación, equivale a esta cantidad en euros de ${currentRow.year}.`;
-          adjustedGoldDetail.textContent = `Ese equivalente compraría hoy esta cantidad de monedas de oro.`;
           currentGoldDetail.textContent = `Tu renta actual compra esta cantidad de monedas de oro hoy.`;
-          resultVerdict.textContent = `Medida directamente en oro, la renta actual compra ${formatCoinDifference(
+          resultVerdict.textContent = `Medida en monedas de oro, la renta actual compra ${formatCoinDifference(
             currentGoldCoins,
             pastGoldCoins,
-          )} que la renta pasada compraba en ${pastRow.year}. Frente al equivalente ajustado por inflación, compra ${formatCoinDifference(
-            currentGoldCoins,
-            adjustedCurrentGoldCoins,
-          )}.`;
+          )} que la renta pasada compraba en ${pastRow.year}.`;
         };
 
         form.addEventListener('submit', (event) => event.preventDefault());
         form.addEventListener('input', updateResult);
-        form.addEventListener('change', updateResult);
+        pastAmountUnit.addEventListener('change', () => {
+          if (pastAmountInput.value !== '') {
+            const amount = pastAmountInput.valueAsNumber;
+            if (!Number.isNaN(amount)) {
+              const newCurrency = pastAmountUnit.value;
+              const newAmount =
+                newCurrency === 'EUR' ? amount / eurToEsp : amount * eurToEsp;
+              pastAmountInput.value = String(Math.round(newAmount * 100) / 100);
+            }
+          }
+          updateResult();
+        });
         updateResult();
       }
     </script>
