@@ -5,9 +5,13 @@ import {
   calculateGoldCoins,
   calculateGoldGrams,
   calculateInflationAdjustedSalary,
+  calculateLiteralPastModernEur,
+  calculatePastGoldCoinsFromLiteral,
   calculateSalaryGoldComparison,
   convertEspToEur,
   convertEurToEsp,
+  cpiRatio,
+  goldCoinRatio,
   goldGramsToCoins,
 } from './calculate';
 import { EUR_TO_ESP } from './constants';
@@ -98,10 +102,81 @@ describe('calculateSalaryGoldComparison', () => {
 
     expect(result).toEqual({
       pastGoldCoins: 100 / 5.81,
+      pastSalaryEur: 1000,
       inflationAdjustedSalaryEur: 2000,
       inflationAdjustedGoldCoinsAtCurrentPrice: 100 / 5.81,
       currentGoldCoins: 150 / 5.81,
     });
+  });
+});
+
+describe('calculateLiteralPastModernEur', () => {
+  it('converts a literal ESP amount to modern EUR via CPI', () => {
+    const result = calculateLiteralPastModernEur({
+      literalAmount: 2_500_000,
+      literalCurrency: 'ESP',
+      sourceYearCpi: 20,
+      currentYearCpi: 100,
+    });
+
+    expect(result).toBeCloseTo((2_500_000 / EUR_TO_ESP) * (100 / 20), 6);
+  });
+
+  it('treats literal EUR amounts as already modern currency', () => {
+    const result = calculateLiteralPastModernEur({
+      literalAmount: 1500,
+      literalCurrency: 'EUR',
+      sourceYearCpi: 20,
+      currentYearCpi: 100,
+    });
+
+    expect(result).toBeCloseTo(1500 * (100 / 20), 6);
+  });
+});
+
+describe('calculatePastGoldCoinsFromLiteral', () => {
+  it('converts literal pesetas to past gold coins', () => {
+    const result = calculatePastGoldCoinsFromLiteral({
+      literalAmount: 2_500_000,
+      literalCurrency: 'ESP',
+      sourceYearCpi: 20,
+      currentYearCpi: 100,
+      sourceYearGoldEurPerGram: 5,
+    });
+
+    const sourceYearEur = 2_500_000 / EUR_TO_ESP;
+    const expected = sourceYearEur / 5 / 5.81;
+    expect(result).toBeCloseTo(expected, 6);
+  });
+});
+
+describe('cpiRatio', () => {
+  it('returns targetCpi divided by sourceCpi', () => {
+    expect(cpiRatio(20, 100)).toBe(5);
+    expect(cpiRatio(50, 100)).toBe(2);
+    expect(cpiRatio(100, 100)).toBe(1);
+  });
+
+  it('throws when CPI values are not positive and finite', () => {
+    expect(() => cpiRatio(0, 100)).toThrow(
+      'sourceYearCpi must be a positive finite number',
+    );
+    expect(() => cpiRatio(100, -1)).toThrow(
+      'targetYearCpi must be a positive finite number',
+    );
+  });
+});
+
+describe('goldCoinRatio', () => {
+  it('returns the relative difference between two coin counts', () => {
+    expect(goldCoinRatio(150, 100)).toBeCloseTo(0.5, 6);
+    expect(goldCoinRatio(50, 100)).toBeCloseTo(-0.5, 6);
+    expect(goldCoinRatio(100, 100)).toBe(0);
+  });
+
+  it('returns null when the reference is zero or not finite', () => {
+    expect(goldCoinRatio(10, 0)).toBeNull();
+    expect(goldCoinRatio(10, Number.NaN)).toBeNull();
   });
 });
 

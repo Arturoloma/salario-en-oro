@@ -10,7 +10,7 @@ import metadata from '../../public/data/metadata.json';
 import '../styles/global.css';
 
 const DEFAULT_PAST_YEAR = 1975;
-const DEFAULT_PAST_SALARY_ESP = 2_500_000;
+const DEFAULT_PAST_SALARY_ESP = 168_000;
 const DEFAULT_CURRENT_SALARY_EUR = 31_000;
 
 const calculationRows = [...calculationData.data].sort(
@@ -53,6 +53,9 @@ const coinFormatter = new Intl.NumberFormat('es-ES', {
 const goldEurFormatter = new Intl.NumberFormat('es-ES', {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
+});
+const eurFormatter = new Intl.NumberFormat('es-ES', {
+  maximumFractionDigits: 0,
 });
 const percentFormatter = new Intl.NumberFormat('es-ES', {
   maximumFractionDigits: 1,
@@ -134,9 +137,15 @@ const calculationRowsJson = JSON.stringify(calculationRows);
           data-current-year={latestRow.year}
           data-eur-to-esp={EUR_TO_ESP}
           data-gold-coin-fine-gold-grams={GOLD_COIN_FINE_GOLD_GRAMS}
+          data-past-year-default={DEFAULT_PAST_YEAR}
+          data-past-salary-default={DEFAULT_PAST_SALARY_ESP}
+          data-current-salary-default={DEFAULT_CURRENT_SALARY_EUR}
+          data-past-mode-default="literal"
         >
           <div class="comparison-grid">
             <div class="comparison-column comparison-column--past">
+              <p class="column-label">Renta de referencia</p>
+
               <div class="field-group">
                 <label for="past-year">Año de la renta pasada</label>
                 <select class="control" id="past-year" name="pastYear">
@@ -154,7 +163,9 @@ const calculationRowsJson = JSON.stringify(calculationRows);
               </div>
 
               <div class="field-group">
-                <label for="past-amount">Renta pasada anual</label>
+                <label for="past-amount" id="past-amount-label">
+                  Renta pasada
+                </label>
                 <div class="input-wrap">
                   <input
                     id="past-amount"
@@ -174,12 +185,31 @@ const calculationRowsJson = JSON.stringify(calculationRows);
                     <option value="EUR">Euros</option>
                   </select>
                 </div>
+
+                <label class="toggle" for="past-amount-literal">
+                  <input
+                    id="past-amount-literal"
+                    name="pastAmountLiteral"
+                    type="checkbox"
+                    checked
+                  />
+                  <span class="toggle-track" aria-hidden="true"></span>
+                  <span class="toggle-text">
+                    <span class="toggle-title"> Cifra literal de su año </span>
+                    <span class="toggle-hint" id="past-amount-literal-hint">
+                      La calculadora ajustará la cifra al IPC y mostrará su
+                      equivalente en euros de hoy. Desactívalo si prefieres
+                      escribir directamente la renta en euros ajustados a la
+                      inflación.
+                    </span>
+                  </span>
+                </label>
               </div>
 
               <article
                 class="result-card result-card--gold-past"
                 aria-live="polite"
-                aria-atomic="true"
+                aria-atomic="false"
               >
                 <span class="result-label">Valor en oro entonces</span>
                 <strong>
@@ -191,10 +221,21 @@ const calculationRowsJson = JSON.stringify(calculationRows);
                   En {DEFAULT_PAST_YEAR}, esta renta compraba esa cantidad de
                   monedas de oro.
                 </p>
+                <p class="result-sub" id="past-eur-equivalent">
+                  ≈ {
+                    eurFormatter.format(
+                      initialComparison.inflationAdjustedSalaryEur,
+                    )
+                  } EUR de hoy
+                </p>
               </article>
             </div>
 
+            <div class="comparison-vs" aria-hidden="true">vs</div>
+
             <div class="comparison-column comparison-column--current">
+              <p class="column-label">Renta a evaluar</p>
+
               <div class="field-group">
                 <label for="current-amount">Renta actual anual</label>
                 <div class="input-wrap">
@@ -214,7 +255,7 @@ const calculationRowsJson = JSON.stringify(calculationRows);
               <article
                 class="result-card result-card--gold-current"
                 aria-live="polite"
-                aria-atomic="true"
+                aria-atomic="false"
               >
                 <span class="result-label">Tu renta actual en oro</span>
                 <strong>
@@ -229,18 +270,23 @@ const calculationRowsJson = JSON.stringify(calculationRows);
             </div>
           </div>
 
-          <div
-            class="results-panel"
+          <output
+            class="results-panel results-panel--verdict"
             id="result"
             aria-live="polite"
             aria-atomic="true"
           >
+            <p class="result-eyebrow">Resultado en oro</p>
             <p class="result-verdict" id="result-verdict">
               Medida en monedas de oro, la renta actual compra {
                 initialDirectGoldDifference
               } que la renta pasada compraba en {DEFAULT_PAST_YEAR}.
             </p>
-          </div>
+            <p class="result-percent" id="result-percent" hidden></p>
+            <button type="button" class="reset-link" id="reset-example" hidden>
+              Restablecer ejemplo
+            </button>
+          </output>
         </form>
       </section>
 
@@ -446,13 +492,18 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
       const pastAmountInput = document.querySelector('#past-amount');
       const currentAmountInput = document.querySelector('#current-amount');
       const pastAmountUnit = document.querySelector('#past-amount-unit');
+      const pastAmountLiteral = document.querySelector('#past-amount-literal');
+      const pastAmountLabel = document.querySelector('#past-amount-label');
       const resultVerdict = document.querySelector('#result-verdict');
+      const resultPercent = document.querySelector('#result-percent');
+      const resetButton = document.querySelector('#reset-example');
       const pastGoldCoinsOutput = document.querySelector('#past-gold-coins');
       const currentGoldCoinsOutput = document.querySelector(
         '#current-gold-coins',
       );
       const pastGoldDetail = document.querySelector('#past-gold-detail');
       const currentGoldDetail = document.querySelector('#current-gold-detail');
+      const pastEurEquivalent = document.querySelector('#past-eur-equivalent');
 
       if (
         dataElement instanceof HTMLScriptElement &&
@@ -461,11 +512,16 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
         pastAmountInput instanceof HTMLInputElement &&
         currentAmountInput instanceof HTMLInputElement &&
         pastAmountUnit instanceof HTMLSelectElement &&
+        pastAmountLiteral instanceof HTMLInputElement &&
+        pastAmountLabel instanceof HTMLLabelElement &&
         resultVerdict &&
+        resultPercent &&
+        resetButton instanceof HTMLButtonElement &&
         pastGoldCoinsOutput &&
         currentGoldCoinsOutput &&
         pastGoldDetail &&
-        currentGoldDetail
+        currentGoldDetail &&
+        pastEurEquivalent
       ) {
         const calculationRows = JSON.parse(dataElement.textContent || '[]');
         const rowsByYear = new Map(
@@ -476,47 +532,44 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
         const goldCoinFineGoldGrams = Number(
           form.dataset.goldCoinFineGoldGrams,
         );
+        const pastYearDefault = Number(form.dataset.pastYearDefault);
+        const pastSalaryDefault = Number(form.dataset.pastSalaryDefault);
+        const currentSalaryDefault = Number(form.dataset.currentSalaryDefault);
+        const pastModeDefaultIsLiteral =
+          form.dataset.pastModeDefault === 'literal';
         const coinFormatter = new Intl.NumberFormat('es-ES', {
           maximumFractionDigits: 2,
           minimumFractionDigits: 2,
+        });
+        const eurFormatter = new Intl.NumberFormat('es-ES', {
+          maximumFractionDigits: 0,
         });
         const percentFormatter = new Intl.NumberFormat('es-ES', {
           maximumFractionDigits: 1,
           style: 'percent',
         });
 
-        const getPastCurrency = () => pastAmountUnit.value;
-
-        const formatCoinDifference = (currentCoins, referenceCoins) => {
-          if (!Number.isFinite(referenceCoins) || referenceCoins === 0) {
-            return 'sin una referencia comparable';
-          }
-
-          const difference = (currentCoins - referenceCoins) / referenceCoins;
-
-          if (Math.abs(difference) < 0.005) {
-            return 'prácticamente lo mismo';
-          }
-
-          const formattedDifference = percentFormatter.format(
-            Math.abs(difference),
-          );
-          return difference < 0
-            ? `${formattedDifference} menos`
-            : `${formattedDifference} más`;
-        };
-
         const clearResult = () => {
           resultVerdict.textContent = '';
+          resultPercent.textContent = '';
+          resultPercent.hidden = true;
           pastGoldCoinsOutput.textContent = '';
           currentGoldCoinsOutput.textContent = '';
           pastGoldDetail.textContent = '';
           currentGoldDetail.textContent = '';
+          pastEurEquivalent.textContent = '';
+          pastEurEquivalent.hidden = true;
+          resetButton.hidden = true;
         };
 
-        const updateResult = () => {
-          const pastCurrency = getPastCurrency();
+        const isAtDefault = () =>
+          pastYearInput.value === String(pastYearDefault) &&
+          pastAmountUnit.value === 'ESP' &&
+          pastAmountLiteral.checked === pastModeDefaultIsLiteral &&
+          pastAmountInput.value === String(pastSalaryDefault) &&
+          currentAmountInput.value === String(currentSalaryDefault);
 
+        const updateResult = () => {
           if (pastAmountInput.value === '' || currentAmountInput.value === '') {
             clearResult();
             return;
@@ -538,12 +591,25 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
             return;
           }
 
-          const pastSalaryEur =
+          const pastCurrency = pastAmountUnit.value;
+          const literalEur =
             pastCurrency === 'ESP' ? pastAmount / eurToEsp : pastAmount;
+
+          const cpiRatio = currentRow.cpiIndex / pastRow.cpiIndex;
+          const pastSalaryYearEur = pastAmountLiteral.checked
+            ? literalEur
+            : literalEur / cpiRatio;
+          const pastSalaryCurrentEur = pastAmountLiteral.checked
+            ? literalEur * cpiRatio
+            : literalEur;
+
           const pastGoldCoins =
-            pastSalaryEur / pastRow.goldEurPerGram / goldCoinFineGoldGrams;
+            pastSalaryYearEur / pastRow.goldEurPerGram / goldCoinFineGoldGrams;
           const currentGoldCoins =
             currentAmount / currentRow.goldEurPerGram / goldCoinFineGoldGrams;
+          const ratio = (currentGoldCoins - pastGoldCoins) / pastGoldCoins;
+          const isComparable =
+            Number.isFinite(ratio) && Math.abs(ratio) >= 0.005;
 
           pastGoldCoinsOutput.textContent = `${coinFormatter.format(
             pastGoldCoins,
@@ -553,14 +619,66 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
           )} monedas`;
           pastGoldDetail.textContent = `En ${pastRow.year}, esta renta compraba esa cantidad de monedas de oro.`;
           currentGoldDetail.textContent = `Tu renta actual compra esta cantidad de monedas de oro hoy.`;
-          resultVerdict.textContent = `Medida en monedas de oro, la renta actual compra ${formatCoinDifference(
-            currentGoldCoins,
-            pastGoldCoins,
-          )} que la renta pasada compraba en ${pastRow.year}.`;
+
+          if (pastAmountLiteral.checked) {
+            pastEurEquivalent.textContent = `≈ ${eurFormatter.format(
+              pastSalaryCurrentEur,
+            )} EUR de hoy`;
+            pastEurEquivalent.hidden = false;
+          } else {
+            pastEurEquivalent.textContent = '';
+            pastEurEquivalent.hidden = true;
+          }
+
+          if (!isComparable) {
+            resultVerdict.textContent = `Medida en monedas de oro, la renta actual compra prácticamente lo mismo que la renta pasada compraba en ${pastRow.year}.`;
+            resultPercent.textContent = '';
+            resultPercent.hidden = true;
+          } else {
+            const direction = ratio < 0 ? 'menos' : 'más';
+            const absolute = percentFormatter.format(Math.abs(ratio));
+            resultVerdict.textContent = `Medida en monedas de oro, la renta actual compra ${absolute} ${direction} que la renta pasada compraba en ${pastRow.year}.`;
+            const todayPercent = percentFormatter.format(
+              currentGoldCoins / pastGoldCoins,
+            );
+            resultPercent.textContent = `Hoy compras el ${todayPercent} de lo que comprabas en ${pastRow.year}.`;
+            resultPercent.hidden = false;
+          }
+
+          resetButton.hidden = isAtDefault();
+        };
+
+        const applyModeLabels = () => {
+          if (pastAmountLiteral.checked) {
+            pastAmountLabel.textContent = 'Renta pasada';
+          } else {
+            pastAmountLabel.textContent =
+              'Renta pasada ajustada a la inflación';
+          }
+        };
+
+        const convertInputForModeChange = () => {
+          if (pastAmountInput.value === '') return;
+
+          const pastRow = rowsByYear.get(pastYearInput.value);
+          if (!pastRow || !currentRow) return;
+
+          const amount = pastAmountInput.valueAsNumber;
+          if (Number.isNaN(amount) || amount < 0) return;
+
+          const ratio = currentRow.cpiIndex / pastRow.cpiIndex;
+          const wasLiteral = !pastAmountLiteral.checked;
+          const newAmount = wasLiteral ? amount * ratio : amount / ratio;
+          pastAmountInput.value = String(Math.round(newAmount * 100) / 100);
         };
 
         form.addEventListener('submit', (event) => event.preventDefault());
         form.addEventListener('input', updateResult);
+        pastAmountLiteral.addEventListener('change', () => {
+          convertInputForModeChange();
+          applyModeLabels();
+          updateResult();
+        });
         pastAmountUnit.addEventListener('change', () => {
           if (pastAmountInput.value !== '') {
             const amount = pastAmountInput.valueAsNumber;
@@ -573,6 +691,17 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
           }
           updateResult();
         });
+        resetButton.addEventListener('click', () => {
+          pastYearInput.value = String(pastYearDefault);
+          pastAmountUnit.value = 'ESP';
+          pastAmountLiteral.checked = pastModeDefaultIsLiteral;
+          pastAmountInput.value = String(pastSalaryDefault);
+          currentAmountInput.value = String(currentSalaryDefault);
+          applyModeLabels();
+          updateResult();
+        });
+
+        applyModeLabels();
         updateResult();
       }
     </script>
