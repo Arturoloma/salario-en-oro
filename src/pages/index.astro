@@ -100,20 +100,20 @@ const calculationRowsJson = JSON.stringify(calculationRows);
       name="description"
       content="Compara una renta del pasado con una renta actual usando inflación y monedas de oro para entender el valor real del dinero."
     />
-    <title>Salario en Oro | Valor real de tu dinero</title>
+    <title>Renta en oro | Valor real de tu dinero</title>
   </head>
   <body>
     <main class="page-shell">
       <section class="hero-section" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow">Salario en Oro</p>
+          <p class="eyebrow">Renta en oro</p>
           <h1 id="hero-title">
             El crecimiento de la renta per cápita española no es lo que parece.
           </h1>
           <p class="hero-lead">
-            En 1975, la renta media per cápita equivalía a unos 15000 euros de
-            hoy después de ajustar al IPC. Hoy, la renta media per cápita es de
-            31000 euros, así que podremos comprar el doble de cosas... ¿no?
+            La renta media per cápita ha crecido desde ~15000 € en 1975 hasta
+            ~31000 euros en 2026, así que podremos comprar el doble de cosas...
+            ¿no?
           </p>
           <a class="button-link" href="#calculadora">Comparar valor real</a>
         </div>
@@ -145,22 +145,6 @@ const calculationRowsJson = JSON.stringify(calculationRows);
           <div class="calculator-inputs">
             <div class="input-panel input-panel--past">
               <p class="column-label">Renta de referencia</p>
-
-              <div class="field-group">
-                <label for="past-year">Año de la renta pasada</label>
-                <select class="control" id="past-year" name="pastYear">
-                  {
-                    calculationRows.map((row) => (
-                      <option
-                        value={row.year}
-                        selected={row.year === DEFAULT_PAST_YEAR}
-                      >
-                        {row.year}
-                      </option>
-                    ))
-                  }
-                </select>
-              </div>
 
               <div class="field-group">
                 <label for="past-amount" id="past-amount-label">
@@ -197,13 +181,27 @@ const calculationRowsJson = JSON.stringify(calculationRows);
                   <span class="toggle-text">
                     <span class="toggle-title"> Cifra literal de su año </span>
                     <span class="toggle-hint" id="past-amount-literal-hint">
-                      La calculadora ajustará la cifra al IPC y mostrará su
-                      equivalente en euros de hoy. Desactívalo si prefieres
-                      escribir directamente la renta en euros ajustados a la
-                      inflación.
+                      Escribe la renta tal como era en su año y la calculadora
+                      la reajustará en base al IPC.
                     </span>
                   </span>
                 </label>
+              </div>
+
+              <div class="field-group">
+                <label for="past-year">Año de la renta pasada</label>
+                <select class="control" id="past-year" name="pastYear">
+                  {
+                    calculationRows.map((row) => (
+                      <option
+                        value={row.year}
+                        selected={row.year === DEFAULT_PAST_YEAR}
+                      >
+                        {row.year}
+                      </option>
+                    ))
+                  }
+                </select>
               </div>
             </div>
 
@@ -211,7 +209,7 @@ const calculationRowsJson = JSON.stringify(calculationRows);
               <p class="column-label">Renta a evaluar</p>
 
               <div class="field-group">
-                <label for="current-amount">Renta actual anual</label>
+                <label for="current-amount">Renta actual</label>
                 <div class="input-wrap">
                   <input
                     id="current-amount"
@@ -287,40 +285,6 @@ const calculationRowsJson = JSON.stringify(calculationRows);
             </button>
           </article>
         </form>
-      </section>
-
-      <section
-        class="interpretation-section"
-        aria-labelledby="interpretacion-titulo"
-      >
-        <div class="section-heading">
-          <p class="eyebrow">Lectura</p>
-          <h2 id="interpretacion-titulo">Qué revela cada medida</h2>
-        </div>
-
-        <div class="interpretation-grid">
-          <article>
-            <h3>Inflación</h3>
-            <p>
-              Responde a una pregunta concreta: qué cantidad de dinero actual
-              tendría un poder adquisitivo parecido.
-            </p>
-          </article>
-          <article>
-            <h3>Oro</h3>
-            <p>
-              Cambia la unidad por completo: no pregunta cuántos euros eran,
-              sino cuántos gramos de oro representaban.
-            </p>
-          </article>
-          <article>
-            <h3>Valor real</h3>
-            <p>
-              Ninguna medida cuenta toda la historia, pero juntas muestran si
-              una comparación nominal está ocultando pérdida de valor.
-            </p>
-          </article>
-        </div>
       </section>
 
       <section
