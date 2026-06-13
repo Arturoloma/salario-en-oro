@@ -87,5 +87,9 @@
     --control-border: 1px solid var(--color-border-strong);
     --control-radius: var(--radius-md);
     --control-min-block-size: 1.5rem;
+
+    /* Comparison layout */
+    --comparison-gap: var(--space-3);
+    --comparison-vs-size: 2.75rem;
   }
 }

@@ -57,6 +57,9 @@ const goldEurFormatter = new Intl.NumberFormat('es-ES', {
 const eurFormatter = new Intl.NumberFormat('es-ES', {
   maximumFractionDigits: 0,
 });
+const amountFormatter = new Intl.NumberFormat('es-ES', {
+  maximumFractionDigits: 2,
+});
 const percentFormatter = new Intl.NumberFormat('es-ES', {
   maximumFractionDigits: 1,
   style: 'percent',
@@ -159,6 +162,7 @@ const calculationRowsJson = JSON.stringify(calculationRows);
                     min="0"
                     step="0.01"
                     value={DEFAULT_PAST_SALARY_ESP}
+                    aria-describedby="past-amount-today-equivalent"
                   />
                   <select
                     id="past-amount-unit"
@@ -183,6 +187,18 @@ const calculationRowsJson = JSON.stringify(calculationRows);
                     <span class="toggle-hint" id="past-amount-literal-hint">
                       Escribe la renta tal como era en su año y la calculadora
                       la reajustará en base al IPC.
+                    </span>
+                    <span
+                      class="field-hint"
+                      id="past-amount-today-equivalent"
+                      aria-live="polite"
+                    >
+                      {amountFormatter.format(DEFAULT_PAST_SALARY_ESP)} pesetas ≈
+                      {
+                        eurFormatter.format(
+                          initialComparison.inflationAdjustedSalaryEur,
+                        )
+                      } € de ahora
                     </span>
                   </span>
                 </label>
@@ -296,9 +312,10 @@ const calculationRowsJson = JSON.stringify(calculationRows);
           Una renta puede duplicarse en euros y no duplicar su valor.
         </h2>
         <p>
-          Decir que una renta “se ha duplicado” puede sonar impresionante. Pero
-          si la comparación no aclara inflación, poder adquisitivo y unidad de
-          medida, la conclusión está incompleta.
+          Decir que una renta “se ha duplicado” puede sonar impresionante, pero
+          el IPC es una cesta media; no describe el coste de vida personal de
+          cada hogar. Si notas que tu bolsillo no compra el doble de cosas, sino
+          la mitad, es por algo.
         </p>
       </section>
 
@@ -316,8 +333,9 @@ monedas_equivalente_hoy = equivalente_actual / oro_€/g_actual / 5,81
 monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
             <p>
               En esta web, 1 moneda de oro = 5,81 gramos de oro fino. Es una
-              unidad histórica abstracta, no una recomendación de inversión ni
-              una pieza concreta de coleccionismo.
+              unidad basada en monedas históricas como las 20 pesetas españolas,
+              los 20 francos franceses, las 20 liras italianas y los 20 francos
+              suizos.
             </p>
           </article>
 
@@ -330,17 +348,21 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
               <dt>Último precio del oro</dt>
               <dd>{goldEurFormatter.format(latestRow.goldEurPerGram)} €/g</dd>
 
-              <dt>Conjunto de datos obtenido</dt>
+              <dt>Fecha de obtención</dt>
               <dd>{retrievedDateFormatted}</dd>
 
               <dt>Versión de metodología</dt>
               <dd>v{metadata.methodologyVersion}</dd>
             </dl>
+
+            <p>
+              Se usan medias anuales del precio del oro y del tipo de cambio; no
+              son precios intradía en tiempo real.
+            </p>
           </article>
 
           <article class="trust-card trust-card--sources" id="fuentes">
             <h3>Fuentes</h3>
-            <p>Datos usados en el cálculo de esta página:</p>
             <ul class="source-list">
               <li>
                 <a
@@ -387,17 +409,6 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
                 — tipos de cambio históricos de la peseta.
               </li>
             </ul>
-            <p>
-              Código fuente del proyecto:
-              <a
-                href="https://github.com/Arturoloma/salario-en-oro"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                github.com/Arturoloma/salario-en-oro
-                <span class="sr-only">(abre en una pestaña nueva)</span>
-              </a>
-            </p>
           </article>
 
           <article class="trust-card trust-card--privacy" id="privacidad">
@@ -406,10 +417,7 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
               Las cantidades que introduces no se envían a ningún servidor. Todo
               el cálculo se ejecuta en tu navegador con datos estáticos.
             </p>
-            <p>
-              En esta versión no hay cuentas de usuario, formularios de envío ni
-              cookies de seguimiento.
-            </p>
+            <p>Esta herramienta no utiliza cookies de seguimiento.</p>
           </article>
         </div>
 
@@ -417,24 +425,19 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
           <h3>Limitaciones y aviso</h3>
           <ul class="limitation-list">
             <li>
-              El oro no es una medida perfecta del coste de vida. Es una unidad
-              alternativa, física y fácil de visualizar.
-            </li>
-            <li>
-              El IPC es una cesta media; no describe el coste de vida personal
-              de cada hogar.
-            </li>
-            <li>
-              PIB per cápita, renta media, salario bruto y salario neto no son
-              lo mismo. No mezcles métricas distintas en una misma conclusión.
-            </li>
-            <li>
-              Se usan medias anuales del precio del oro y del tipo de cambio; no
-              son precios intradía en tiempo real.
-            </li>
-            <li>
               Esto no es asesoramiento financiero. Es una herramienta educativa
               para detectar comparaciones monetarias incompletas.
+            </li>
+            <li>
+              Puedes consultar el código fuente de este proyecto en
+              <a
+                href="https://github.com/Arturoloma/salario-en-oro"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                github.com/Arturoloma/salario-en-oro
+                <span class="sr-only">(abre en una pestaña nueva)</span>
+              </a>
             </li>
           </ul>
         </article>
@@ -457,6 +460,9 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
       const pastAmountUnit = document.querySelector('#past-amount-unit');
       const pastAmountLiteral = document.querySelector('#past-amount-literal');
       const pastAmountLabel = document.querySelector('#past-amount-label');
+      const pastAmountTodayEquivalent = document.querySelector(
+        '#past-amount-today-equivalent',
+      );
       const resultVerdict = document.querySelector('#result-verdict');
       const resultPercent = document.querySelector('#result-percent');
       const resetButton = document.querySelector('#reset-example');
@@ -477,6 +483,7 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
         pastAmountUnit instanceof HTMLSelectElement &&
         pastAmountLiteral instanceof HTMLInputElement &&
         pastAmountLabel instanceof HTMLLabelElement &&
+        pastAmountTodayEquivalent instanceof HTMLElement &&
         resultVerdict &&
         resultPercent &&
         resetButton instanceof HTMLButtonElement &&
@@ -507,6 +514,9 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
         const eurFormatter = new Intl.NumberFormat('es-ES', {
           maximumFractionDigits: 0,
         });
+        const amountFormatter = new Intl.NumberFormat('es-ES', {
+          maximumFractionDigits: 2,
+        });
         const percentFormatter = new Intl.NumberFormat('es-ES', {
           maximumFractionDigits: 1,
           style: 'percent',
@@ -522,6 +532,8 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
           currentGoldDetail.textContent = '';
           pastEurEquivalent.textContent = '';
           pastEurEquivalent.hidden = true;
+          pastAmountTodayEquivalent.textContent = '';
+          pastAmountTodayEquivalent.hidden = true;
           resetButton.hidden = true;
         };
 
@@ -555,6 +567,8 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
           }
 
           const pastCurrency = pastAmountUnit.value;
+          const pastCurrencyLabel =
+            pastCurrency === 'ESP' ? 'pesetas' : 'euros';
           const literalEur =
             pastCurrency === 'ESP' ? pastAmount / eurToEsp : pastAmount;
 
@@ -584,11 +598,19 @@ monedas_renta_actual = renta_actual_eur / oro_€/g_actual / 5,81</code></pre>
           currentGoldDetail.textContent = `Tu renta actual compra esta cantidad de monedas de oro hoy.`;
 
           if (pastAmountLiteral.checked) {
+            pastAmountTodayEquivalent.textContent = `${amountFormatter.format(
+              pastAmount,
+            )} ${pastCurrencyLabel} ≈ ${eurFormatter.format(
+              pastSalaryCurrentEur,
+            )} € de ahora`;
+            pastAmountTodayEquivalent.hidden = false;
             pastEurEquivalent.textContent = `≈ ${eurFormatter.format(
               pastSalaryCurrentEur,
             )} EUR de hoy`;
             pastEurEquivalent.hidden = false;
           } else {
+            pastAmountTodayEquivalent.textContent = '';
+            pastAmountTodayEquivalent.hidden = true;
             pastEurEquivalent.textContent = '';
             pastEurEquivalent.hidden = true;
           }
